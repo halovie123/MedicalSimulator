@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Medical Simulator</string>
+
+    <!-- Connection status -->
+    <string name="connected">CONNECTED</string>
+    <string name="connecting">CONNECTING…</string>
+    <string name="disconnected">DISCONNECTED</string>
+    <string name="no_device">No Device</string>
+
+    <!-- Scan dialog -->
+    <string name="scan_devices">Scan BLE Devices</string>
+    <string name="scanning">Scanning…</string>
+    <string name="stop_scan">Stop</string>
+    <string name="scan_again">Scan Again</string>
+    <string name="simulator_badge">SIMULATOR</string>
+
+    <!-- Buttons -->
+    <string name="btn_scan">SCAN</string>
+    <string name="btn_disconnect">DISCONNECT</string>
+
+    <!-- Metric labels -->
+    <string name="label_hr">HR</string>
+    <string name="label_spo2">SpO₂</string>
+    <string name="label_rr">RR</string>
+    <string name="label_pi">PI</string>
+    <string name="label_noise">NOISE</string>
+    <string name="label_mode">MODE</string>
+
+    <!-- Metric units -->
+    <string name="unit_bpm">bpm</string>
+    <string name="unit_percent">%</string>
+    <string name="unit_rpm">rpm</string>
+    <string name="unit_pi">%</string>
+
+    <!-- Section headers -->
+    <string name="header_parameters">PARAMETERS</string>
+    <string name="header_conditions">CONDITION MODE</string>
+    <string name="header_waveform">PPG WAVEFORM</string>
+
+    <!-- Parameter labels -->
+    <string name="param_hr">Heart Rate</string>
+    <string name="param_spo2">SpO₂</string>
+    <string name="param_rr">Resp. Rate</string>
+    <string name="param_pi">Perf. Index</string>
+    <string name="param_noise">Noise Level</string>
+
+    <!-- Condition mode labels -->
+    <string name="mode_normal">Normal</string>
+    <string name="mode_arrhythmia">Arrhythmia</string>
+    <string name="mode_weak_perf">Weak Perf.</string>
+    <string name="mode_vasoconstric">Vasoconstric.</string>
+    <string name="mode_strong_perf">Strong Perf.</string>
+    <string name="mode_vasodilation">Vasodilation</string>
+
+    <!-- Misc -->
+    <string name="app_version">v1.0.0</string>
+    <string name="ppg_title">PPG</string>
+    <string name="hz_label">50 Hz</string>
+</resources>

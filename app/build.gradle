@@ -1,0 +1,67 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.medical.simulator'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.medical.simulator"
+        minSdk 26            // Android 8.0 Oreo — as required
+        targetSdk 34         // Latest stable as of this build
+        versionCode 1
+        versionName "1.0.0"
+
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    packaging {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+    // AndroidX core
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.activity:activity:1.8.2'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.7.0'
+
+    // Nordic BLE Library — production BLE for Android
+    implementation 'no.nordicsemi.android:ble:2.7.2'
+    implementation 'no.nordicsemi.android:ble-livedata:2.7.2'
+
+    // AndroidX LiveData / ViewModel
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.7.0'
+
+    // RecyclerView for device scan list
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+}

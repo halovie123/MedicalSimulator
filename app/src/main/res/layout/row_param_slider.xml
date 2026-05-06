@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Reusable parameter control row.
+    Used for: HR, SpO2, RR, PI, Noise.
+
+    Layout:
+    [LABEL]  [−]  [══════SEEKBAR══════]  [+]  [VALUE]
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="36dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="2dp">
+
+    <!-- Parameter label (set in code / per-include override) -->
+    <TextView
+        android:id="@+id/tvParamLabel"
+        style="@style/TextStyle.ParamLabel"
+        android:layout_width="58dp"
+        android:layout_height="wrap_content"
+        android:text="PARAM"
+        android:singleLine="true" />
+
+    <!-- Decrement button -->
+    <Button
+        android:id="@+id/btnDec"
+        style="@style/ButtonStyle.IncrDecr"
+        android:text="−"
+        android:layout_marginEnd="4dp" />
+
+    <!-- SeekBar -->
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:progressDrawable="@drawable/seekbar_progress"
+        android:thumb="@drawable/seekbar_thumb"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:splitTrack="false" />
+
+    <!-- Increment button -->
+    <Button
+        android:id="@+id/btnInc"
+        style="@style/ButtonStyle.IncrDecr"
+        android:text="+"
+        android:layout_marginStart="4dp" />
+
+    <!-- Current value display -->
+    <TextView
+        android:id="@+id/tvCurrentValue"
+        style="@style/TextStyle.ParamValue"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:text="---"
+        android:layout_marginStart="4dp" />
+
+</LinearLayout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/background_dialog"
+    android:padding="16dp">
+
+    <!-- Title row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/scan_devices"
+            android:textColor="@color/waveform_green"
+            android:textSize="16sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.12"
+            android:fontFamily="sans-serif-condensed" />
+
+        <ProgressBar
+            android:id="@+id/scanProgress"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:indeterminateTint="@color/waveform_green"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- Status text -->
+    <TextView
+        android:id="@+id/tvScanStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/scanning"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif-condensed" />
+
+    <!-- Device list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDevices"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:background="@color/background_panel"
+        android:clipToPadding="false"
+        android:padding="4dp" />
+
+    <!-- Scan toggle button -->
+    <Button
+        android:id="@+id/btnScanToggle"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/stop_scan"
+        android:background="@drawable/bg_button_scan"
+        android:textColor="@color/button_scan_text"
+        android:textSize="13sp"
+        android:textAllCaps="true"
+        android:letterSpacing="0.08"
+        android:fontFamily="sans-serif-condensed" />
+
+</LinearLayout>

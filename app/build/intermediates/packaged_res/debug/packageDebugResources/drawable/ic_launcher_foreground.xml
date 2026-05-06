@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Outer circle -->
+    <path
+        android:fillColor="#00FF88"
+        android:pathData="M54,54m-46,0a46,46 0,1 1,92 0a46,46 0,1 1,-92 0"
+        android:fillAlpha="0.15"/>
+
+    <!-- ECG / PPG waveform line -->
+    <path
+        android:strokeColor="#00FF88"
+        android:strokeWidth="3.5"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M12,54 L28,54 L34,38 L40,70 L46,32 L52,76 L58,54 L64,54 L70,44 L76,64 L82,54 L96,54"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+</vector>
