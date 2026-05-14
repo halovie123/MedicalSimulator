@@ -25,7 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.medical.simulator.ble.EspBleManager;
+import com.medical.simulator.ble.RpiBleManager;
 import com.medical.simulator.model.SimulatorParams;
 import com.medical.simulator.ui.WaveformSurfaceView;
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     // ─── BLE & params ─────────────────────────────────────────────────────────
-    private EspBleManager    bleManager;
+    private RpiBleManager    bleManager;
     private SimulatorParams  params = new SimulatorParams();
 
     // Debounce — don't spam the ESP32 on every slider tick
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             setupActionButtons();
 
             // Khởi tạo BLE sau cùng
-            bleManager = new EspBleManager(getApplicationContext());
+            bleManager = new RpiBleManager(getApplicationContext());
             observeBle();
             checkAndInitBle();
         }, 150); // Trì hoãn 150ms

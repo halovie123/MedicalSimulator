@@ -4,7 +4,7 @@
             "outputFile": "com.medical.simulator.app-mergeDebugResources-31:/values-sw600dp-v13/values-sw600dp-v13.xml",
             "map": [
                 {
-                    "source": "/home/halovie/.gradle/caches/transforms-4/e24e97debd1734d5a9d8eb7a7aadcaa3/transformed/material-1.11.0/res/values-sw600dp-v13/values-sw600dp-v13.xml",
+                    "source": "/home/huynn/.gradle/caches/transforms-4/e24e97debd1734d5a9d8eb7a7aadcaa3/transformed/material-1.11.0/res/values-sw600dp-v13/values-sw600dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,10,11,12,13,14",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "/home/halovie/.gradle/caches/transforms-4/1d382a970569d6f4eddada36cac67b49/transformed/appcompat-1.6.1/res/values-sw600dp-v13/values-sw600dp-v13.xml",
+                    "source": "/home/huynn/.gradle/caches/transforms-4/1d382a970569d6f4eddada36cac67b49/transformed/appcompat-1.6.1/res/values-sw600dp-v13/values-sw600dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

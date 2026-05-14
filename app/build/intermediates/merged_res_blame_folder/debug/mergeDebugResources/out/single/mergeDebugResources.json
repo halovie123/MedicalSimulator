@@ -1,126 +1,122 @@
 [
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/mipmap-xxhdpi/ic_launcher.png"
+        "merged": "com.medical.simulator.app-debug-33:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.medical.simulator.app-main-35:/mipmap-mdpi/ic_launcher.png"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_ic_dot_disconnected.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/ic_dot_disconnected.xml"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/ic_launcher_foreground.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_bg_button_disconnect.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/bg_button_disconnect.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_bg_waveform_panel.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/bg_waveform_panel.xml"
+        "merged": "com.medical.simulator.app-debug-33:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "com.medical.simulator.app-main-35:/mipmap-xxxhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "com.medical.simulator.app-debug-33:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/mipmap-hdpi_ic_launcher_round.png.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/mipmap-hdpi/ic_launcher_round.png"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_bg_status_bar.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/bg_status_bar.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_ic_dot_connecting.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/ic_dot_connecting.xml"
+        "merged": "com.medical.simulator.app-debug-33:/layout_row_param_slider.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/layout/row_param_slider.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_seekbar_thumb.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/seekbar_thumb.xml"
+        "merged": "com.medical.simulator.app-debug-33:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "com.medical.simulator.app-main-35:/mipmap-xxhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/mipmap-mdpi_ic_launcher_round.png.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/mipmap-mdpi/ic_launcher_round.png"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_bg_button_mode.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/bg_button_mode.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/layout_dialog_device_scan.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/layout/dialog_device_scan.xml"
+        "merged": "com.medical.simulator.app-debug-33:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "com.medical.simulator.app-main-35:/mipmap-mdpi/ic_launcher_round.png"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/mipmap-xxxhdpi/ic_launcher_round.png"
+        "merged": "com.medical.simulator.app-debug-33:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.medical.simulator.app-main-35:/mipmap-xxhdpi/ic_launcher.png"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/layout_row_param_slider.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/layout/row_param_slider.xml"
+        "merged": "com.medical.simulator.app-debug-33:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "com.medical.simulator.app-main-35:/mipmap-xhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_bg_button_mode.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/bg_button_mode.xml"
+        "merged": "com.medical.simulator.app-debug-33:/layout_item_ble_device.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/layout/item_ble_device.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_seekbar_progress.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/seekbar_progress.xml"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_bg_button_incr_decr.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/bg_button_incr_decr.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/layout_activity_main.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/layout/activity_main.xml"
+        "merged": "com.medical.simulator.app-debug-33:/layout_dialog_device_scan.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/layout/dialog_device_scan.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/mipmap-mdpi_ic_launcher.png.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/mipmap-mdpi/ic_launcher.png"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_ic_dot_connecting.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/ic_dot_connecting.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/mipmap-xxxhdpi_ic_launcher.png.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/mipmap-xxxhdpi/ic_launcher.png"
+        "merged": "com.medical.simulator.app-debug-33:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "com.medical.simulator.app-main-35:/mipmap-hdpi/ic_launcher_round.png"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/layout_item_ble_device.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/layout/item_ble_device.xml"
+        "merged": "com.medical.simulator.app-debug-33:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.medical.simulator.app-main-35:/mipmap-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/mipmap-xhdpi/ic_launcher.png"
+        "merged": "com.medical.simulator.app-debug-33:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.medical.simulator.app-main-35:/mipmap-xxxhdpi/ic_launcher.png"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_ic_dot_connected.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/ic_dot_connected.xml"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_ic_dot_connected.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/ic_dot_connected.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_bg_card_metric.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/bg_card_metric.xml"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_seekbar_progress.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/seekbar_progress.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/mipmap-xhdpi_ic_launcher_round.png.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/mipmap-xhdpi/ic_launcher_round.png"
+        "merged": "com.medical.simulator.app-debug-33:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.medical.simulator.app-main-35:/mipmap-hdpi/ic_launcher.png"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_ic_launcher_foreground.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/ic_launcher_foreground.xml"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_ic_dot_disconnected.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/ic_dot_disconnected.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_bg_control_panel.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/bg_control_panel.xml"
+        "merged": "com.medical.simulator.app-debug-33:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_bg_button_incr_decr.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/bg_button_incr_decr.xml"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_bg_waveform_panel.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/bg_waveform_panel.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_bg_status_bar.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/bg_status_bar.xml"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_bg_button_scan.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/bg_button_scan.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/mipmap-hdpi/ic_launcher.png"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_bg_control_panel.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/bg_control_panel.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_bg_button_disconnect.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/bg_button_disconnect.xml"
-    },
-    {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/drawable_bg_button_scan.xml.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/drawable/bg_button_scan.xml"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_seekbar_thumb.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/seekbar_thumb.xml"
     },
     {
         "merged": "com.medical.simulator.app-debug-33:/layout_activity_main.xml.flat",
         "source": "com.medical.simulator.app-main-35:/layout/activity_main.xml"
     },
     {
-        "merged": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-debug-33:/mipmap-xxhdpi_ic_launcher_round.png.flat",
-        "source": "/home/halovie/.gradle/daemon/8.6/com.medical.simulator.app-main-35:/mipmap-xxhdpi/ic_launcher_round.png"
+        "merged": "com.medical.simulator.app-debug-33:/drawable_bg_card_metric.xml.flat",
+        "source": "com.medical.simulator.app-main-35:/drawable/bg_card_metric.xml"
     }
 ]
