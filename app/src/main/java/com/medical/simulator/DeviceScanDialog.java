@@ -28,7 +28,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.medical.simulator.ble.EspBleManager;
+import com.medical.simulator.ble.RpiBleManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +157,7 @@ public class DeviceScanDialog extends DialogFragment {
         // Filter by our simulator service UUID — only shows matching devices
         List<ScanFilter> filters = new ArrayList<>();
         filters.add(new ScanFilter.Builder()
-                .setServiceUuid(new ParcelUuid(EspBleManager.SERVICE_UUID))
+                .setServiceUuid(new ParcelUuid(RpiBleManager.SERVICE_UUID))
                 .build());
 
         try {
@@ -207,7 +207,7 @@ public class DeviceScanDialog extends DialogFragment {
             boolean isSim = result.getScanRecord() != null
                     && result.getScanRecord().getServiceUuids() != null
                     && result.getScanRecord().getServiceUuids()
-                             .contains(new ParcelUuid(EspBleManager.SERVICE_UUID));
+                             .contains(new ParcelUuid(RpiBleManager.SERVICE_UUID));
 
             final String finalName = name;
             final boolean finalIsSim = isSim;

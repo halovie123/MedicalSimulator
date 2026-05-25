@@ -1,10 +1,10 @@
-#Thu Apr 30 11:04:50 ICT 2026
-base.0=/home/halovie/AndroidStudioProjects/MedicalSimulator/app/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex
-base.1=/home/halovie/AndroidStudioProjects/MedicalSimulator/app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
-base.2=/home/halovie/AndroidStudioProjects/MedicalSimulator/app/build/intermediates/dex/debug/mergeProjectDexDebug/11/classes.dex
-base.3=/home/halovie/AndroidStudioProjects/MedicalSimulator/app/build/intermediates/dex/debug/mergeProjectDexDebug/14/classes.dex
-base.4=/home/halovie/AndroidStudioProjects/MedicalSimulator/app/build/intermediates/dex/debug/mergeProjectDexDebug/4/classes.dex
-base.5=/home/halovie/AndroidStudioProjects/MedicalSimulator/app/build/intermediates/dex/debug/mergeProjectDexDebug/6/classes.dex
+#Mon May 11 01:10:37 ICT 2026
+base.0=/home/huynn/final_project/BioSignalSimulatorPro/MedicalSimulator/app/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex
+base.1=/home/huynn/final_project/BioSignalSimulatorPro/MedicalSimulator/app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
+base.2=/home/huynn/final_project/BioSignalSimulatorPro/MedicalSimulator/app/build/intermediates/dex/debug/mergeProjectDexDebug/11/classes.dex
+base.3=/home/huynn/final_project/BioSignalSimulatorPro/MedicalSimulator/app/build/intermediates/dex/debug/mergeProjectDexDebug/14/classes.dex
+base.4=/home/huynn/final_project/BioSignalSimulatorPro/MedicalSimulator/app/build/intermediates/dex/debug/mergeProjectDexDebug/4/classes.dex
+base.5=/home/huynn/final_project/BioSignalSimulatorPro/MedicalSimulator/app/build/intermediates/dex/debug/mergeProjectDexDebug/6/classes.dex
 path.0=classes.dex
 path.1=0/classes.dex
 path.2=11/classes.dex
