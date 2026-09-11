@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Medical Simulator</string>
+    <string name="monitor_title">Patient monitor</string>
+    <string name="unit_title">ICU / PPG</string>
+    <string name="control_hint">Adjust live output</string>
 
     <!-- Connection status -->
     <string name="connected">CONNECTED</string>
@@ -32,6 +35,8 @@
     <string name="unit_percent">%</string>
     <string name="unit_rpm">rpm</string>
     <string name="unit_pi">%</string>
+    <string name="unit_level">level</string>
+    <string name="unit_state">state</string>
 
     <!-- Section headers -->
     <string name="header_parameters">PARAMETERS</string>

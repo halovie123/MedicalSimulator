@@ -2,13 +2,15 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="52dp"
+    android:layout_height="60dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingStart="10dp"
-    android:paddingEnd="10dp"
-    android:background="@color/background_panel"
-    android:layout_marginBottom="2dp">
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:background="@drawable/bg_device_item"
+    android:layout_marginBottom="5dp"
+    android:clickable="true"
+    android:focusable="true">
 
     <!-- Device name + address (left) -->
     <LinearLayout
@@ -21,9 +23,9 @@
             android:id="@+id/tvDeviceName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/waveform_green"
-            android:textSize="13sp"
-            android:fontFamily="sans-serif-condensed"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
             android:singleLine="true" />
 
         <TextView
@@ -31,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_secondary"
-            android:textSize="10sp"
+            android:textSize="11sp"
             android:fontFamily="monospace" />
 
     </LinearLayout>
@@ -43,11 +45,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="@string/simulator_badge"
-        android:textColor="#00FF88"
+        android:textColor="@color/waveform_green"
         android:textSize="9sp"
-        android:fontFamily="sans-serif-condensed"
-        android:letterSpacing="0.10"
-        android:background="#1A003300"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.06"
+        android:background="#263F43"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
         android:paddingTop="2dp"
@@ -61,6 +63,6 @@
         android:layout_height="wrap_content"
         android:textColor="@color/text_secondary"
         android:textSize="11sp"
-        android:fontFamily="sans-serif-condensed" />
+        android:fontFamily="monospace" />
 
 </LinearLayout>

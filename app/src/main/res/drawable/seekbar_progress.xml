@@ -4,9 +4,9 @@
     <!-- Track background (inactive portion) -->
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
-            <solid android:color="#0D2200" />
-            <corners android:radius="2dp" />
-            <size android:height="4dp" />
+            <solid android:color="#2A414A" />
+            <corners android:radius="3dp" />
+            <size android:height="5dp" />
         </shape>
     </item>
 
@@ -14,8 +14,8 @@
     <item android:id="@android:id/secondaryProgress">
         <clip>
             <shape android:shape="rectangle">
-                <solid android:color="#1A4400" />
-                <corners android:radius="2dp" />
+                <solid android:color="#3A5A61" />
+                <corners android:radius="3dp" />
             </shape>
         </clip>
     </item>
@@ -24,8 +24,8 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape android:shape="rectangle">
-                <solid android:color="#00FF88" />
-                <corners android:radius="2dp" />
+                <solid android:color="#55E8D2" />
+                <corners android:radius="3dp" />
             </shape>
         </clip>
     </item>

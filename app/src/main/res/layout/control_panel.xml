@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+    android:background="@drawable/bg_control_panel"
+    android:paddingStart="@dimen/control_panel_horizontal_padding" android:paddingEnd="@dimen/control_panel_horizontal_padding"
+    android:paddingTop="@dimen/control_panel_vertical_padding" android:paddingBottom="@dimen/control_panel_vertical_padding">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/header_parameters"
+            android:textColor="@color/text_primary" android:textSize="@dimen/section_title_size" android:fontFamily="sans-serif-medium" android:letterSpacing="0.06" android:textAllCaps="true" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/control_hint" android:textColor="@color/text_secondary" android:textSize="@dimen/eyebrow_text_size" android:fontFamily="sans-serif" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:paddingEnd="@dimen/control_column_gap">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="@dimen/param_row_height" android:orientation="horizontal" android:gravity="center_vertical">
+                <TextView style="@style/TextStyle.ParamLabel" android:layout_width="@dimen/param_label_width" android:layout_height="wrap_content" android:text="@string/param_hr" />
+                <Button android:id="@+id/btnHrDec" style="@style/ButtonStyle.IncrDecr" android:text="−" />
+                <SeekBar android:id="@+id/seekHr" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="@dimen/spacing_xs" android:layout_marginEnd="@dimen/spacing_xs" android:progressDrawable="@drawable/seekbar_progress" android:thumb="@drawable/seekbar_thumb" android:splitTrack="false" />
+                <Button android:id="@+id/btnHrInc" style="@style/ButtonStyle.IncrDecr" android:text="+" />
+                <TextView android:id="@+id/tvHrCurrent" style="@style/TextStyle.ParamValue" android:layout_width="@dimen/param_value_width" android:layout_height="wrap_content" android:text="75" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="@dimen/param_row_height" android:orientation="horizontal" android:gravity="center_vertical">
+                <TextView style="@style/TextStyle.ParamLabel" android:layout_width="@dimen/param_label_width" android:layout_height="wrap_content" android:text="@string/param_spo2" />
+                <Button android:id="@+id/btnSpo2Dec" style="@style/ButtonStyle.IncrDecr" android:text="−" />
+                <SeekBar android:id="@+id/seekSpo2" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="@dimen/spacing_xs" android:layout_marginEnd="@dimen/spacing_xs" android:progressDrawable="@drawable/seekbar_progress" android:thumb="@drawable/seekbar_thumb" android:splitTrack="false" />
+                <Button android:id="@+id/btnSpo2Inc" style="@style/ButtonStyle.IncrDecr" android:text="+" />
+                <TextView android:id="@+id/tvSpo2Current" style="@style/TextStyle.ParamValue" android:layout_width="@dimen/param_value_width" android:layout_height="wrap_content" android:text="98" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="@dimen/param_row_height" android:orientation="horizontal" android:gravity="center_vertical">
+                <TextView style="@style/TextStyle.ParamLabel" android:layout_width="@dimen/param_label_width" android:layout_height="wrap_content" android:text="@string/param_rr" />
+                <Button android:id="@+id/btnRrDec" style="@style/ButtonStyle.IncrDecr" android:text="−" />
+                <SeekBar android:id="@+id/seekRr" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="@dimen/spacing_xs" android:layout_marginEnd="@dimen/spacing_xs" android:progressDrawable="@drawable/seekbar_progress" android:thumb="@drawable/seekbar_thumb" android:splitTrack="false" />
+                <Button android:id="@+id/btnRrInc" style="@style/ButtonStyle.IncrDecr" android:text="+" />
+                <TextView android:id="@+id/tvRrCurrent" style="@style/TextStyle.ParamValue" android:layout_width="@dimen/param_value_width" android:layout_height="wrap_content" android:text="16" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View android:layout_width="1dp" android:layout_height="match_parent" android:background="@color/divider" />
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:paddingStart="@dimen/control_column_gap">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="@dimen/param_row_height" android:orientation="horizontal" android:gravity="center_vertical">
+                <TextView style="@style/TextStyle.ParamLabel" android:layout_width="@dimen/param_label_width_short" android:layout_height="wrap_content" android:text="@string/param_pi" />
+                <Button android:id="@+id/btnPiDec" style="@style/ButtonStyle.IncrDecr" android:text="−" />
+                <SeekBar android:id="@+id/seekPi" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="@dimen/spacing_xs" android:layout_marginEnd="@dimen/spacing_xs" android:progressDrawable="@drawable/seekbar_progress" android:thumb="@drawable/seekbar_thumb" android:splitTrack="false" />
+                <Button android:id="@+id/btnPiInc" style="@style/ButtonStyle.IncrDecr" android:text="+" />
+                <TextView android:id="@+id/tvPiCurrent" style="@style/TextStyle.ParamValue" android:layout_width="@dimen/param_value_width" android:layout_height="wrap_content" android:text="2.50" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="@dimen/param_row_height" android:orientation="horizontal" android:gravity="center_vertical">
+                <TextView style="@style/TextStyle.ParamLabel" android:layout_width="@dimen/param_label_width_short" android:layout_height="wrap_content" android:text="@string/param_noise" />
+                <Button android:id="@+id/btnNoiseDec" style="@style/ButtonStyle.IncrDecr" android:text="−" />
+                <SeekBar android:id="@+id/seekNoise" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="@dimen/spacing_xs" android:layout_marginEnd="@dimen/spacing_xs" android:progressDrawable="@drawable/seekbar_progress" android:thumb="@drawable/seekbar_thumb" android:splitTrack="false" />
+                <Button android:id="@+id/btnNoiseInc" style="@style/ButtonStyle.IncrDecr" android:text="+" />
+                <TextView android:id="@+id/tvNoiseCurrent" style="@style/TextStyle.ParamValue" android:layout_width="@dimen/param_value_width" android:layout_height="wrap_content" android:text="0.10" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="@dimen/spacing_xs" android:layout_marginBottom="@dimen/spacing_xs" android:background="@color/divider" />
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="@dimen/mode_row_height" android:orientation="horizontal" android:gravity="center_vertical">
+        <TextView android:layout_width="@dimen/mode_label_width" android:layout_height="wrap_content" android:text="@string/header_conditions" android:textColor="@color/text_secondary" android:textSize="@dimen/eyebrow_text_size" android:fontFamily="sans-serif-medium" android:letterSpacing="0.08" android:textAllCaps="true" />
+        <HorizontalScrollView android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:scrollbars="none">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent" android:orientation="horizontal" android:gravity="center_vertical">
+                <Button android:id="@+id/btnModeNormal" style="@style/ButtonStyle.ConditionMode" android:text="@string/mode_normal" android:textColor="@color/mode_normal" />
+                <Button android:id="@+id/btnModeArrhythmia" style="@style/ButtonStyle.ConditionMode" android:text="@string/mode_arrhythmia" android:textColor="@color/mode_arrhythmia" />
+                <Button android:id="@+id/btnModeWeakPerf" style="@style/ButtonStyle.ConditionMode" android:text="@string/mode_weak_perf" android:textColor="@color/mode_weak_perf" />
+                <Button android:id="@+id/btnModeVasoconstric" style="@style/ButtonStyle.ConditionMode" android:text="@string/mode_vasoconstric" android:textColor="@color/mode_vasoconstric" />
+                <Button android:id="@+id/btnModeStrongPerf" style="@style/ButtonStyle.ConditionMode" android:text="@string/mode_strong_perf" android:textColor="@color/mode_strong_perf" />
+                <Button android:id="@+id/btnModeVasodilation" style="@style/ButtonStyle.ConditionMode" android:text="@string/mode_vasodilation" android:textColor="@color/mode_vasodilation" />
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+</LinearLayout>

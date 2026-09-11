@@ -11,7 +11,7 @@
     <style name="Theme.MedicalSimulator" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowBackground">@color/background_primary</item>
         <item name="android:colorBackground">@color/background_primary</item>
-        <item name="colorPrimary">@color/neon_green</item>
+        <item name="colorPrimary">@color/waveform_green</item>
         <item name="colorPrimaryDark">@color/background_primary</item>
         <item name="colorAccent">@color/waveform_green</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
@@ -32,9 +32,9 @@
 
     <!-- Dialog style for scan dialog -->
     <style name="Theme.MedicalSimulator.Dialog" parent="Theme.MaterialComponents.Dialog">
-        <item name="android:windowBackground">@color/background_dialog</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsFloating">true</item>
-        <item name="colorPrimary">@color/neon_green</item>
+        <item name="colorPrimary">@color/waveform_green</item>
         <item name="colorAccent">@color/waveform_green</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
@@ -42,80 +42,94 @@
 
     <!-- Metric card label text -->
     <style name="TextStyle.MetricLabel">
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">9sp</item>
         <item name="android:textColor">@color/metric_label</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
-        <item name="android:letterSpacing">0.15</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.08</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
     <!-- Metric card value text -->
     <style name="TextStyle.MetricValue">
-        <item name="android:textSize">28sp</item>
-        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">@dimen/metric_value_size</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:fontFeatureSettings">tnum</item>
         <item name="android:includeFontPadding">false</item>
     </style>
 
     <!-- Metric card unit text -->
     <style name="TextStyle.MetricUnit">
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">9sp</item>
         <item name="android:textColor">@color/metric_unit</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <!-- Param row label -->
     <style name="TextStyle.ParamLabel">
-        <item name="android:textSize">11sp</item>
+        <item name="android:textSize">10sp</item>
         <item name="android:textColor">@color/text_secondary</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:letterSpacing">0.10</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
     <!-- Param current value -->
     <style name="TextStyle.ParamValue">
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/waveform_green</item>
-        <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:minWidth">48dp</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:fontFeatureSettings">tnum</item>
+        <item name="android:minWidth">0dp</item>
         <item name="android:gravity">center</item>
     </style>
 
     <!-- Inc/Dec button style -->
     <style name="ButtonStyle.IncrDecr">
-        <item name="android:layout_width">40dp</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_width">@dimen/incr_decr_size</item>
+        <item name="android:layout_height">@dimen/incr_decr_size</item>
         <item name="android:background">@drawable/bg_button_incr_decr</item>
         <item name="android:textColor">@color/button_incr_decr_text</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">17sp</item>
         <item name="android:gravity">center</item>
         <item name="android:padding">0dp</item>
-        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
     </style>
 
     <!-- Condition mode button -->
     <style name="ButtonStyle.ConditionMode" parent="ButtonStyle">
-        <item name="android:layout_width">0dp</item> <item name="android:layout_height">44dp</item>
-        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">@dimen/mode_button_width</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:background">@drawable/bg_button_mode</item>
-        <item name="android:textSize">11sp</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:letterSpacing">0.05</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
-        <item name="android:padding">4dp</item>
-        <item name="android:layout_marginStart">3dp</item>
-        <item name="android:layout_marginEnd">3dp</item>
+        <item name="android:textSize">9sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_marginStart">2dp</item>
+        <item name="android:layout_marginEnd">2dp</item>
     </style>
 
     <!-- Top action button (Scan / Disconnect) -->
     <style name="ButtonStyle.ActionButton">
-        <item name="android:layout_height">38dp</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">10sp</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:letterSpacing">0.08</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
-        <item name="android:paddingStart">14dp</item>
-        <item name="android:paddingEnd">14dp</item>
+        <item name="android:letterSpacing">0.04</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
     </style>
 
 </resources>

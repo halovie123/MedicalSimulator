@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="screen_padding">12dp</dimen>
+    <dimen name="status_bar_height">58dp</dimen>
+    <dimen name="status_bar_horizontal_padding">16dp</dimen>
+    <dimen name="header_title_size">15sp</dimen>
+    <dimen name="device_name_size">11sp</dimen>
+    <dimen name="metric_panel_width">238dp</dimen>
+    <dimen name="metric_card_padding">12dp</dimen>
+    <dimen name="metric_gap">7dp</dimen>
+    <dimen name="metric_value_size">33sp</dimen>
+    <dimen name="mode_value_size">14sp</dimen>
+    <dimen name="control_panel_horizontal_padding">16dp</dimen>
+    <dimen name="control_panel_vertical_padding">10dp</dimen>
+    <dimen name="control_column_gap">14dp</dimen>
+    <dimen name="param_row_height">40dp</dimen>
+    <dimen name="param_label_width">78dp</dimen>
+    <dimen name="param_label_width_short">64dp</dimen>
+    <dimen name="param_value_width">58dp</dimen>
+    <dimen name="incr_decr_size">34dp</dimen>
+    <dimen name="mode_row_height">48dp</dimen>
+    <dimen name="mode_label_width">100dp</dimen>
+    <dimen name="action_button_height">38dp</dimen>
+    <dimen name="scan_button_width">80dp</dimen>
+    <dimen name="disconnect_button_width">116dp</dimen>
+</resources>

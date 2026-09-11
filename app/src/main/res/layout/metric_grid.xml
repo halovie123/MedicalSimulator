@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+        android:orientation="horizontal" android:baselineAligned="false">
+        <LinearLayout
+            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+            android:layout_marginEnd="@dimen/metric_gap" android:orientation="vertical" android:gravity="center_vertical"
+            android:background="@drawable/bg_card_metric" android:padding="@dimen/metric_card_padding">
+            <TextView style="@style/TextStyle.MetricLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/label_hr" />
+            <TextView android:id="@+id/tvHrValue" style="@style/TextStyle.MetricValue" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="---" android:textColor="@color/metric_hr" />
+            <TextView style="@style/TextStyle.MetricUnit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_bpm" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+            android:orientation="vertical" android:gravity="center_vertical"
+            android:background="@drawable/bg_card_metric" android:padding="@dimen/metric_card_padding">
+            <TextView style="@style/TextStyle.MetricLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/label_spo2" />
+            <TextView android:id="@+id/tvSpo2Value" style="@style/TextStyle.MetricValue" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="---" android:textColor="@color/metric_spo2" />
+            <TextView style="@style/TextStyle.MetricUnit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_percent" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="@dimen/metric_gap"
+        android:orientation="horizontal" android:baselineAligned="false">
+        <LinearLayout
+            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginEnd="@dimen/metric_gap"
+            android:orientation="vertical" android:gravity="center_vertical" android:background="@drawable/bg_card_metric" android:padding="@dimen/metric_card_padding">
+            <TextView style="@style/TextStyle.MetricLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/label_rr" />
+            <TextView android:id="@+id/tvRrValue" style="@style/TextStyle.MetricValue" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="---" android:textColor="@color/metric_rr" />
+            <TextView style="@style/TextStyle.MetricUnit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_rpm" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+            android:orientation="vertical" android:gravity="center_vertical" android:background="@drawable/bg_card_metric" android:padding="@dimen/metric_card_padding">
+            <TextView style="@style/TextStyle.MetricLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/label_pi" />
+            <TextView android:id="@+id/tvPiValue" style="@style/TextStyle.MetricValue" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="---" android:textColor="@color/metric_pi" />
+            <TextView style="@style/TextStyle.MetricUnit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_pi" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="@dimen/metric_gap"
+        android:orientation="horizontal" android:baselineAligned="false">
+        <LinearLayout
+            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginEnd="@dimen/metric_gap"
+            android:orientation="vertical" android:gravity="center_vertical" android:background="@drawable/bg_card_metric" android:padding="@dimen/metric_card_padding">
+            <TextView style="@style/TextStyle.MetricLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/label_noise" />
+            <TextView android:id="@+id/tvNoiseValue" style="@style/TextStyle.MetricValue" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="---" android:textColor="@color/metric_noise" />
+            <TextView style="@style/TextStyle.MetricUnit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_level" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+            android:orientation="vertical" android:gravity="center_vertical" android:background="@drawable/bg_card_metric" android:padding="@dimen/metric_card_padding">
+            <TextView style="@style/TextStyle.MetricLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/label_mode" />
+            <TextView android:id="@+id/tvModeValue" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Normal" android:textColor="@color/metric_mode" android:textSize="@dimen/mode_value_size"
+                android:gravity="start" android:fontFamily="sans-serif-medium" android:textAllCaps="false"
+                android:ellipsize="end" android:singleLine="true" />
+            <TextView style="@style/TextStyle.MetricUnit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/unit_state" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

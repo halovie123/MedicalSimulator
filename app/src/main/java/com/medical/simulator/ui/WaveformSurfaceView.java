@@ -120,32 +120,32 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
     // ─── Init paints (gọi 1 lần duy nhất) ───────────────────────────────────
 
     private void initPaints() {
-        bgPaint.setColor(Color.BLACK);
+        bgPaint.setColor(Color.rgb(13, 23, 30));
         bgPaint.setStyle(Paint.Style.FILL);
 
-        gridMinorPaint.setColor(0x18006600);
+        gridMinorPaint.setColor(0x243D6870);
         gridMinorPaint.setStyle(Paint.Style.STROKE);
         gridMinorPaint.setStrokeWidth(0.5f);
         gridMinorPaint.setAntiAlias(false);
 
-        gridMajorPaint.setColor(0x30009900);
+        gridMajorPaint.setColor(0x40537D83);
         gridMajorPaint.setStyle(Paint.Style.STROKE);
         gridMajorPaint.setStrokeWidth(1.0f);
         gridMajorPaint.setAntiAlias(false);
 
         // Sóng neon xanh — đây là màu quan trọng nhất
-        waveformPaint.setColor(0xFF00FFAA);
+        waveformPaint.setColor(0xFF55E8D2);
         waveformPaint.setStyle(Paint.Style.STROKE);
         waveformPaint.setStrokeWidth(2.5f);
         waveformPaint.setAntiAlias(true);
         waveformPaint.setStrokeCap(Paint.Cap.ROUND);
         waveformPaint.setStrokeJoin(Paint.Join.ROUND);
 
-        scanLinePaint.setColor(0xCC00FF55);
+        scanLinePaint.setColor(0xCC9AF59F);
         scanLinePaint.setStyle(Paint.Style.STROKE);
         scanLinePaint.setStrokeWidth(1.5f);
 
-        labelPaint.setColor(0xFF1A4D00);
+        labelPaint.setColor(0xFF72BDB8);
         labelPaint.setTextSize(18f);
         labelPaint.setAntiAlias(true);
     }

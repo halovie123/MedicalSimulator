@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/background_dialog"
-    android:padding="16dp">
+    android:background="@drawable/bg_dialog_surface"
+    android:padding="@dimen/dialog_padding">
 
     <!-- Title row -->
     <LinearLayout
@@ -13,15 +13,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="12dp">
+        android:layout_marginBottom="@dimen/spacing_md">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/scan_devices"
-            android:textColor="@color/waveform_green"
-            android:textSize="16sp"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
             android:textAllCaps="true"
             android:letterSpacing="0.12"
             android:fontFamily="sans-serif-condensed" />
@@ -40,28 +40,30 @@
         android:id="@+id/tvScanStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="@dimen/spacing_sm"
         android:text="@string/scanning"
         android:textColor="@color/text_secondary"
         android:textSize="12sp"
-        android:fontFamily="sans-serif-condensed" />
+        android:fontFamily="sans-serif" />
 
     <!-- Device list -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvDevices"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="@dimen/dialog_list_height"
         android:background="@color/background_panel"
         android:clipToPadding="false"
-        android:padding="4dp" />
+        android:padding="@dimen/spacing_sm" />
 
     <!-- Scan toggle button -->
     <Button
         android:id="@+id/btnScanToggle"
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/spacing_md"
+        android:minHeight="48dp"
         android:text="@string/stop_scan"
+        style="@style/ButtonStyle.ActionButton"
         android:background="@drawable/bg_button_scan"
         android:textColor="@color/button_scan_text"
         android:textSize="13sp"
