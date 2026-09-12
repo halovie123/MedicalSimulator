@@ -21,6 +21,8 @@
     <!-- Buttons -->
     <string name="btn_scan">SCAN</string>
     <string name="btn_disconnect">DISCONNECT</string>
+    <string name="run_simulation">▶ RUN</string>
+    <string name="stop_simulation">⏹ STOP</string>
 
     <!-- Metric labels -->
     <string name="label_hr">HR</string>
@@ -65,6 +67,7 @@
     <string name="rec_indicator">● REC</string>
     <string name="playback_indicator">▶ PLAYBACK</string>
     <string name="paused_indicator">‖ PAUSED</string>
+    <string name="remote_playback_label">▶ %1$s</string>
     <string name="playback_title">Play Recording</string>
     <string name="playback_hint">Select a recording</string>
     <string name="playback_empty">No recordings found</string>

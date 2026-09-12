@@ -86,6 +86,19 @@
             android:singleLine="true" />
 
         <Button
+            android:id="@+id/btnRun"
+            style="@style/ButtonStyle.ActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/action_button_height"
+            android:layout_marginEnd="@dimen/spacing_sm"
+            android:paddingStart="@dimen/spacing_sm"
+            android:paddingEnd="@dimen/spacing_sm"
+            android:text="@string/run_simulation"
+            android:background="@drawable/bg_button_run"
+            android:textColor="@color/button_scan_text"
+            android:enabled="false" />
+
+        <Button
             android:id="@+id/btnScan"
             style="@style/ButtonStyle.ActionButton"
             android:layout_width="@dimen/scan_button_width"
@@ -159,6 +172,16 @@
                     android:textColor="@color/waveform_green"
                     android:textSize="@dimen/eyebrow_text_size"
                     android:fontFamily="monospace"
+                    android:visibility="gone" />
+                <TextView
+                    android:id="@+id/tvRemoteLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_sm"
+                    android:textColor="@color/metric_pi"
+                    android:textSize="@dimen/eyebrow_text_size"
+                    android:fontFamily="monospace"
+                    android:singleLine="true"
                     android:visibility="gone" />
                 <Button
                     android:id="@+id/btnRec"

@@ -1,5 +1,8 @@
 package com.medical.simulator.model;
 
+import java.util.Locale;
+import java.util.Set;
+
 /**
  * Holds all configurable parameters for the ESP32 PPG medical simulator.
  * Provides JSON serialisation for BLE command packets.
@@ -27,10 +30,13 @@ public class SimulatorParams {
     };
 
     // ─── Parameter Bounds ──────────────────────────────────────────────────────
-    public static final int HR_MIN    = 20,   HR_MAX    = 300;
-    public static final int SPO2_MIN  = 70,   SPO2_MAX  = 100;
-    public static final int RR_MIN    = 4,    RR_MAX    = 60;
-    public static final float PI_MIN   = 0.02f, PI_MAX  = 20.0f;
+    // Keep these ranges identical to models/limits.py on the Pi. A narrower
+    // phone range makes a Pi-originated value impossible to represent and the
+    // next phone edit silently clamps it back to the old range.
+    public static final int HR_MIN    = 10,   HR_MAX    = 300;
+    public static final int SPO2_MIN  = 0,    SPO2_MAX  = 100;
+    public static final int RR_MIN    = 1,    RR_MAX    = 150;
+    public static final float PI_MIN   = 0.01f, PI_MAX  = 30.0f;
     public static final float NOISE_MIN = 0.0f, NOISE_MAX = 1.0f;
 
     // ─── AC/DC Amplitude Bounds (mV) ───────────────────────────────────────────
@@ -41,7 +47,7 @@ public class SimulatorParams {
     private int   heartRate       = 75;
     private int   spo2            = 98;
     private int   respiratoryRate = 16;
-    private float perfusionIndex  = 2.5f;
+    private float perfusionIndex  = 3.0f;
     private float noiseLevel      = 0.10f;
     private int condition = 0;
     private float acIrMv  = 45.0f;
@@ -101,21 +107,48 @@ public class SimulatorParams {
 
     // ─── JSON Serialisation ───────────────────────────────────────────────────
 
-    /** Serialise to JSON command packet for the device (delta merge, all keys optional). */
+    /** Complete parameter snapshot, used when a connection is established. */
     public String toCommandJson() {
-        return "{"
-                + "\"hr\":" + heartRate
-                + ",\"spo2\":" + spo2
-                + ",\"rr\":" + respiratoryRate
-                + ",\"pi\":" + String.format(java.util.Locale.US, "%.2f", perfusionIndex)
-                + ",\"noise\":" + String.format(java.util.Locale.US, "%.2f", noiseLevel)
-                + ",\"condition\":" + condition
-                + ",\"ac_ir_mv\":" + String.format(java.util.Locale.US, "%.2f", acIrMv)
-                + ",\"ac_red_mv\":" + String.format(java.util.Locale.US, "%.2f", acRedMv)
-                + ",\"dc_ir_mv\":" + String.format(java.util.Locale.US, "%.2f", dcIrMv)
-                + ",\"dc_red_mv\":" + String.format(java.util.Locale.US, "%.2f", dcRedMv)
-                + ",\"origin\":\"android\""
-                + "}";
+        return toCommandJson(null);
+    }
+
+    /**
+     * Delta snapshot for a user edit. A PI edit must not carry a stale AC
+     * value that overwrites the PI translation on the Pi.
+     */
+    public String toCommandJson(Set<String> keys) {
+        StringBuilder out = new StringBuilder(192).append('{');
+        boolean first = true;
+        if (keys == null || keys.contains("hr")) first = append(out, first, "\"hr\":" + heartRate);
+        if (keys == null || keys.contains("spo2")) first = append(out, first, "\"spo2\":" + spo2);
+        if (keys == null || keys.contains("rr")) first = append(out, first, "\"rr\":" + respiratoryRate);
+        if (keys == null || keys.contains("pi")) {
+            first = append(out, first, "\"pi\":" + String.format(Locale.US, "%.3f", perfusionIndex));
+        }
+        if (keys == null || keys.contains("noise")) {
+            first = append(out, first, "\"noise\":" + String.format(Locale.US, "%.2f", noiseLevel));
+        }
+        if (keys == null || keys.contains("condition")) first = append(out, first, "\"condition\":" + condition);
+        if (keys == null || keys.contains("ac_ir_mv")) {
+            first = append(out, first, "\"ac_ir_mv\":" + String.format(Locale.US, "%.2f", acIrMv));
+        }
+        if (keys == null || keys.contains("ac_red_mv")) {
+            first = append(out, first, "\"ac_red_mv\":" + String.format(Locale.US, "%.2f", acRedMv));
+        }
+        if (keys == null || keys.contains("dc_ir_mv")) {
+            first = append(out, first, "\"dc_ir_mv\":" + String.format(Locale.US, "%.2f", dcIrMv));
+        }
+        if (keys == null || keys.contains("dc_red_mv")) {
+            first = append(out, first, "\"dc_red_mv\":" + String.format(Locale.US, "%.2f", dcRedMv));
+        }
+        append(out, first, "\"origin\":\"android\"");
+        return out.append('}').toString();
+    }
+
+    private static boolean append(StringBuilder out, boolean first, String field) {
+        if (!first) out.append(',');
+        out.append(field);
+        return false;
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────

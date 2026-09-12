@@ -57,10 +57,13 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
     private static final float SCALE_SMOOTHING   = 0.15f; // hệ số lerp mỗi frame (0..1)
     private static final float SCALE_DEFAULT_MIN = 0f;
     private static final float SCALE_DEFAULT_MAX = 100f;
+    private static final int SCALE_LABEL_UPDATE_FRAMES = 6;
 
     /** Biên độ scale hiện tại (đơn vị mV) — cập nhật mượt mỗi frame */
     private float scaleMin = SCALE_DEFAULT_MIN;
     private float scaleMax = SCALE_DEFAULT_MAX;
+    private String scaleLabel = "0–100 mV";
+    private int scaleLabelFrame;
 
     /** FPS mục tiêu render thread */
     private static final int  TARGET_FPS      = 60;
@@ -166,6 +169,7 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
      * @param value Biên độ hiển thị (mV) từ thiết bị, vd 45.20 hoặc 1520.00
      */
     public void addSample(float value) {
+        if (!Float.isFinite(value)) return;
         synchronized (ringLock) {
             ring[writeIdx % BUFFER_SIZE] = value;
             writeIdx++;
@@ -182,6 +186,8 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
         }
         scaleMin = SCALE_DEFAULT_MIN;
         scaleMax = SCALE_DEFAULT_MAX;
+        scaleLabel = "0–100 mV";
+        scaleLabelFrame = 0;
     }
 
     // ─── SurfaceHolder.Callback ───────────────────────────────────────────────
@@ -219,7 +225,10 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
             super("PPG-RenderThread");
             this.holder = holder;
             setDaemon(true);
-            setPriority(Thread.MAX_PRIORITY - 1);
+            // Do not starve the Android main thread. The previous MAX-1
+            // priority made slider touch events and BLE status delivery hitch
+            // on older phones while the canvas was rendering.
+            setPriority(Thread.NORM_PRIORITY);
         }
 
         @Override
@@ -355,8 +364,13 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
         canvas.drawLine(cursorX, vPad, cursorX, H - vPad, scanLinePaint);
 
         // ── Label thông tin (trục Y hiện tại theo mV) ──
-        canvas.drawText(String.format(Locale.US, "%.0f–%.0f mV", scaleMin, scaleMax),
-                6, H - 8, labelPaint);
+        // Formatting every 60 Hz frame allocates temporary strings and adds
+        // avoidable GC pressure during slider gestures.
+        if (++scaleLabelFrame >= SCALE_LABEL_UPDATE_FRAMES) {
+            scaleLabelFrame = 0;
+            scaleLabel = String.format(Locale.US, "%.0f–%.0f mV", scaleMin, scaleMax);
+        }
+        canvas.drawText(scaleLabel, 6, H - 8, labelPaint);
         canvas.drawText("3s", W - 28, H - 8, labelPaint);
     }
 
