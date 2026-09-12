@@ -13,59 +13,59 @@
 13
 14    <!-- API 18–30: classic + BLE scanning requires location -->
 15    <uses-permission
-15-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:7:5-9:38
+15-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:7:5-9:38
 16        android:name="android.permission.BLUETOOTH"
-16-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:8:9-52
+16-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:8:9-52
 17        android:maxSdkVersion="30" />
-17-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:9:9-35
+17-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:9:9-35
 18    <uses-permission
-18-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:10:5-12:38
+18-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:10:5-12:38
 19        android:name="android.permission.BLUETOOTH_ADMIN"
-19-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:11:9-58
+19-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:11:9-58
 20        android:maxSdkVersion="30" />
-20-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:12:9-35
+20-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:12:9-35
 21    <uses-permission
-21-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:13:5-15:38
+21-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:13:5-15:38
 22        android:name="android.permission.ACCESS_FINE_LOCATION"
-22-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:14:9-63
+22-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:14:9-63
 23        android:maxSdkVersion="30" />
-23-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:15:9-35
+23-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:15:9-35
 24    <uses-permission
-24-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:16:5-18:38
+24-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:16:5-18:38
 25        android:name="android.permission.ACCESS_COARSE_LOCATION"
-25-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:17:9-65
+25-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:17:9-65
 26        android:maxSdkVersion="30" />
-26-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:18:9-35
+26-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:18:9-35
 27
 28    <!-- API 31+ (Android 12): granular BLE permissions -->
 29    <uses-permission
-29-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:21:5-25:58
+29-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:21:5-25:58
 30        android:name="android.permission.BLUETOOTH_SCAN"
-30-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:22:9-57
+30-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:22:9-57
 31        android:usesPermissionFlags="neverForLocation" />
-31-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:23:9-55
+31-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:23:9-55
 32    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-32-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:26:5-76
-32-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:26:22-73
+32-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:26:5-76
+32-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:26:22-73
 33    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
-33-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:27:5-78
-33-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:27:22-75
+33-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:27:5-78
+33-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:27:22-75
 34
 35    <!-- Foreground service for background BLE (optional but production-safe) -->
 36    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-36-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:30:5-77
-36-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:30:22-74
+36-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:30:5-77
+36-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:30:22-74
 37    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
-37-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:31:5-94
-37-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:31:22-91
+37-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:31:5-94
+37-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:31:22-91
 38
 39    <!-- Hardware feature declarations -->
 40    <uses-feature
-40-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:34:5-36:35
+40-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:34:5-36:35
 41        android:name="android.hardware.bluetooth_le"
-41-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:35:9-53
+41-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:35:9-53
 42        android:required="true" />
-42-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:36:9-32
+42-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:36:9-32
 43
 44    <permission
 44-->[androidx.core:core:1.9.0] /home/huynn/.gradle/caches/transforms-4/0b1543d70f5c0b4fae2196a7dba9cb3e/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
@@ -79,117 +79,116 @@
 48-->[androidx.core:core:1.9.0] /home/huynn/.gradle/caches/transforms-4/0b1543d70f5c0b4fae2196a7dba9cb3e/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
 49
 50    <application
-50-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:38:5-61:19
+50-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:38:5-61:19
 51        android:allowBackup="false"
-51-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:39:9-36
+51-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:39:9-36
 52        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 52-->[androidx.core:core:1.9.0] /home/huynn/.gradle/caches/transforms-4/0b1543d70f5c0b4fae2196a7dba9cb3e/transformed/core-1.9.0/AndroidManifest.xml:28:18-86
 53        android:debuggable="true"
 54        android:extractNativeLibs="false"
 55        android:hardwareAccelerated="true"
-55-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:45:9-43
+55-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:45:9-43
 56        android:icon="@mipmap/ic_launcher"
-56-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:40:9-43
+56-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:40:9-43
 57        android:label="@string/app_name"
-57-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:41:9-41
+57-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:41:9-41
 58        android:roundIcon="@mipmap/ic_launcher_round"
-58-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:42:9-54
+58-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:42:9-54
 59        android:supportsRtl="false"
-59-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:43:9-36
-60        android:testOnly="true"
-61        android:theme="@style/Theme.MedicalSimulator" >
-61-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:44:9-54
-62        <activity
-62-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:47:9-59:20
-63            android:name="com.medical.simulator.MainActivity"
-63-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:48:13-41
-64            android:configChanges="orientation|screenSize|keyboardHidden"
-64-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:51:13-74
-65            android:exported="true"
-65-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:49:13-36
-66            android:screenOrientation="landscape"
-66-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:50:13-50
-67            android:theme="@style/Theme.MedicalSimulator.Fullscreen"
-67-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:53:13-69
-68            android:windowSoftInputMode="adjustNothing" >
-68-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:52:13-56
-69            <intent-filter>
-69-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:55:13-58:29
-70                <action android:name="android.intent.action.MAIN" />
-70-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:56:17-69
-70-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:56:25-66
-71
-72                <category android:name="android.intent.category.LAUNCHER" />
-72-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:57:17-77
-72-->/home/huynn/StudioProjects/MedicalSimulator/app/src/main/AndroidManifest.xml:57:27-74
-73            </intent-filter>
-74        </activity>
-75
-76        <provider
-76-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
-77            android:name="androidx.startup.InitializationProvider"
-77-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:25:13-67
-78            android:authorities="com.medical.simulator.debug.androidx-startup"
-78-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:26:13-68
-79            android:exported="false" >
-79-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:27:13-37
-80            <meta-data
-80-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
-81                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-81-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:30:17-75
-82                android:value="androidx.startup" />
-82-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:31:17-49
-83            <meta-data
-83-->[androidx.lifecycle:lifecycle-process:2.7.0] /home/huynn/.gradle/caches/transforms-4/20ce1c195deb7598ea927fb3f76ec351/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
-84                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-84-->[androidx.lifecycle:lifecycle-process:2.7.0] /home/huynn/.gradle/caches/transforms-4/20ce1c195deb7598ea927fb3f76ec351/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
-85                android:value="androidx.startup" />
-85-->[androidx.lifecycle:lifecycle-process:2.7.0] /home/huynn/.gradle/caches/transforms-4/20ce1c195deb7598ea927fb3f76ec351/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
-86            <meta-data
-86-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
-87                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-87-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
-88                android:value="androidx.startup" />
-88-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
-89        </provider>
-90
-91        <receiver
-91-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
-92            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-92-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
-93            android:directBootAware="false"
-93-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
-94            android:enabled="true"
-94-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
-95            android:exported="true"
-95-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
-96            android:permission="android.permission.DUMP" >
-96-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
-97            <intent-filter>
-97-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
-98                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-98-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
-98-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
-99            </intent-filter>
-100            <intent-filter>
-100-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
-101                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-101-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
-101-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
-102            </intent-filter>
-103            <intent-filter>
-103-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
-104                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-104-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
-104-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
-105            </intent-filter>
-106            <intent-filter>
-106-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
-107                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-107-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
-107-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
-108            </intent-filter>
-109        </receiver>
-110    </application>
-111
-112</manifest>
+59-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:43:9-36
+60        android:theme="@style/Theme.MedicalSimulator" >
+60-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:44:9-54
+61        <activity
+61-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:47:9-59:20
+62            android:name="com.medical.simulator.MainActivity"
+62-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:48:13-41
+63            android:configChanges="orientation|screenSize|keyboardHidden"
+63-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:51:13-74
+64            android:exported="true"
+64-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:49:13-36
+65            android:screenOrientation="landscape"
+65-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:50:13-50
+66            android:theme="@style/Theme.MedicalSimulator.Fullscreen"
+66-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:53:13-69
+67            android:windowSoftInputMode="adjustNothing" >
+67-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:52:13-56
+68            <intent-filter>
+68-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:55:13-58:29
+69                <action android:name="android.intent.action.MAIN" />
+69-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:56:17-69
+69-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:56:25-66
+70
+71                <category android:name="android.intent.category.LAUNCHER" />
+71-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:57:17-77
+71-->/home/huynn/final_project/MedicalSimulator/app/src/main/AndroidManifest.xml:57:27-74
+72            </intent-filter>
+73        </activity>
+74
+75        <provider
+75-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+76            android:name="androidx.startup.InitializationProvider"
+76-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:25:13-67
+77            android:authorities="com.medical.simulator.debug.androidx-startup"
+77-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:26:13-68
+78            android:exported="false" >
+78-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:27:13-37
+79            <meta-data
+79-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+80                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+80-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:30:17-75
+81                android:value="androidx.startup" />
+81-->[androidx.emoji2:emoji2:1.2.0] /home/huynn/.gradle/caches/transforms-4/9456310b725003957977eb810fc4f042/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:31:17-49
+82            <meta-data
+82-->[androidx.lifecycle:lifecycle-process:2.7.0] /home/huynn/.gradle/caches/transforms-4/20ce1c195deb7598ea927fb3f76ec351/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+83                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+83-->[androidx.lifecycle:lifecycle-process:2.7.0] /home/huynn/.gradle/caches/transforms-4/20ce1c195deb7598ea927fb3f76ec351/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+84                android:value="androidx.startup" />
+84-->[androidx.lifecycle:lifecycle-process:2.7.0] /home/huynn/.gradle/caches/transforms-4/20ce1c195deb7598ea927fb3f76ec351/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+85            <meta-data
+85-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+86                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+86-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+87                android:value="androidx.startup" />
+87-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+88        </provider>
+89
+90        <receiver
+90-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+91            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+91-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+92            android:directBootAware="false"
+92-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+93            android:enabled="true"
+93-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+94            android:exported="true"
+94-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+95            android:permission="android.permission.DUMP" >
+95-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+96            <intent-filter>
+96-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+97                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+97-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+97-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
+98            </intent-filter>
+99            <intent-filter>
+99-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+100                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+100-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+100-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+101            </intent-filter>
+102            <intent-filter>
+102-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+103                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+103-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+103-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+104            </intent-filter>
+105            <intent-filter>
+105-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+106                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+106-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+106-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/huynn/.gradle/caches/transforms-4/e5672e815fbd5a92b668bd3f496f1182/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
+107            </intent-filter>
+108        </receiver>
+109    </application>
+110
+111</manifest>

@@ -40,15 +40,39 @@
 
     <!-- Section headers -->
     <string name="header_parameters">PARAMETERS</string>
-    <string name="header_conditions">CONDITION MODE</string>
+    <string name="header_amplitude">AMPLITUDE</string>
+    <string name="header_conditions">MODE</string>
     <string name="header_waveform">PPG WAVEFORM</string>
 
     <!-- Parameter labels -->
     <string name="param_hr">Heart Rate</string>
     <string name="param_spo2">SpO₂</string>
     <string name="param_rr">Resp. Rate</string>
-    <string name="param_pi">Perf. Index</string>
-    <string name="param_noise">Noise Level</string>
+    <string name="param_pi">PI</string>
+    <string name="param_noise">Noise</string>
+    <string name="param_ac_ir">AC·IR mV</string>
+    <string name="param_ac_red">AC·RED mV</string>
+    <string name="param_dc_ir">DC·IR mV</string>
+    <string name="param_dc_red">DC·RED mV</string>
+
+    <!-- Record / playback -->
+    <string name="btn_rec">REC</string>
+    <string name="btn_stop">STOP</string>
+    <string name="btn_play">PLAY</string>
+    <string name="btn_pause">PAUSE</string>
+    <string name="btn_resume">RESUME</string>
+    <string name="btn_close">✕</string>
+    <string name="rec_indicator">● REC</string>
+    <string name="playback_indicator">▶ PLAYBACK</string>
+    <string name="paused_indicator">‖ PAUSED</string>
+    <string name="playback_title">Play Recording</string>
+    <string name="playback_hint">Select a recording</string>
+    <string name="playback_empty">No recordings found</string>
+    <string name="recording_started">Recording started</string>
+    <string name="recording_saved">Recording saved: %1$s</string>
+    <string name="recording_error">Failed to start recording</string>
+    <string name="playback_load_error">Could not load recording</string>
+    <string name="scan_close">Close</string>
 
     <!-- Condition mode labels -->
     <string name="mode_normal">Normal</string>

@@ -90,6 +90,9 @@ public class RpiBleManager extends BleManager {
     private final MutableLiveData<Integer> liveCondition  = new MutableLiveData<>();  // 0-5 mode index
     private final MutableLiveData<String>  errorEvent     = new MutableLiveData<>();
 
+    /** Full STATUS packet (with origin/seq) for echo/sync handling in UI layer. */
+    private final MutableLiveData<StatusPacket> statusPacket = new MutableLiveData<>();
+
     public RpiBleManager(@NonNull Context context) {
         super(context);
     }
@@ -114,6 +117,9 @@ public class RpiBleManager extends BleManager {
 
     /** Lỗi để hiện Toast */
     public LiveData<String>          getErrorEvent()      { return errorEvent; }
+
+    /** Gói STATUS đầy đủ (origin/seq + AC/DC) — dùng cho echo/sync rule */
+    public LiveData<StatusPacket>    getStatusPacket()    { return statusPacket; }
 
     // ─── Connection ───────────────────────────────────────────────────
 
@@ -319,8 +325,59 @@ public class RpiBleManager extends BleManager {
             if (obj.has("condition"))
                 liveCondition.postValue(obj.getInt("condition"));
 
+            // Full packet (echo/sync rule + AC/DC amplitude) — UI layer xử lý
+            statusPacket.postValue(new StatusPacket(obj));
+
         } catch (Exception e) {
             Log.w(TAG, "Status JSON parse lỗi: " + str + " — " + e.getMessage());
+        }
+    }
+
+    // ─── Status Packet ────────────────────────────────────────────────────────
+
+    /**
+     * Một gói STATUS từ thiết bị. Mọi field đều optional (null nếu không có).
+     * origin: "android" (echo của lệnh ta vừa gửi) hoặc "rpi" (thay đổi từ Pi GUI).
+     */
+    public static final class StatusPacket {
+        @Nullable public final String  origin;
+        @Nullable public final Integer hr;
+        @Nullable public final Integer spo2;
+        @Nullable public final Integer rr;
+        @Nullable public final Float   pi;
+        @Nullable public final Float   noise;
+        @Nullable public final Integer condition;
+        @Nullable public final Float   acIrMv;
+        @Nullable public final Float   acRedMv;
+        @Nullable public final Float   dcIrMv;
+        @Nullable public final Float   dcRedMv;
+        @Nullable public final Integer seq;
+
+        StatusPacket(@NonNull JSONObject o) {
+            String origin = null;
+            try { origin = o.has("origin") ? o.getString("origin") : null; } catch (Exception ignored) {}
+            this.origin     = origin;
+            this.hr         = optInt(o, "hr");
+            this.spo2       = optInt(o, "spo2");
+            this.rr         = optInt(o, "rr");
+            this.pi         = optFloat(o, "pi");
+            this.noise      = optFloat(o, "noise");
+            this.condition  = optInt(o, "condition");
+            this.acIrMv     = optFloat(o, "ac_ir_mv");
+            this.acRedMv    = optFloat(o, "ac_red_mv");
+            this.dcIrMv     = optFloat(o, "dc_ir_mv");
+            this.dcRedMv    = optFloat(o, "dc_red_mv");
+            this.seq        = optInt(o, "seq");
+        }
+
+        private static Integer optInt(@NonNull JSONObject o, @NonNull String key) {
+            try { return o.has(key) ? (int) Math.round(o.getDouble(key)) : null; }
+            catch (Exception e) { return null; }
+        }
+
+        private static Float optFloat(@NonNull JSONObject o, @NonNull String key) {
+            try { return o.has(key) ? (float) o.getDouble(key) : null; }
+            catch (Exception e) { return null; }
         }
     }
 

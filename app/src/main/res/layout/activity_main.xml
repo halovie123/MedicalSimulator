@@ -125,6 +125,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:paddingStart="@dimen/spacing_md"
                 android:paddingTop="@dimen/spacing_sm"
                 android:paddingEnd="@dimen/spacing_md"
@@ -139,6 +140,60 @@
                     android:fontFamily="sans-serif-medium"
                     android:letterSpacing="0.12"
                     android:textAllCaps="true" />
+                <TextView
+                    android:id="@+id/tvRecIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_sm"
+                    android:text="@string/rec_indicator"
+                    android:textColor="@color/status_disconnected"
+                    android:textSize="@dimen/eyebrow_text_size"
+                    android:fontFamily="monospace"
+                    android:visibility="gone" />
+                <TextView
+                    android:id="@+id/tvPlaybackIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_sm"
+                    android:text="@string/playback_indicator"
+                    android:textColor="@color/waveform_green"
+                    android:textSize="@dimen/eyebrow_text_size"
+                    android:fontFamily="monospace"
+                    android:visibility="gone" />
+                <Button
+                    android:id="@+id/btnRec"
+                    style="@style/ButtonStyle.ActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/action_button_height"
+                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:paddingStart="@dimen/spacing_sm"
+                    android:paddingEnd="@dimen/spacing_sm"
+                    android:text="@string/btn_rec"
+                    android:background="@drawable/bg_button_rec"
+                    android:textColor="@color/button_disconnect_text" />
+                <Button
+                    android:id="@+id/btnPlay"
+                    style="@style/ButtonStyle.ActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/action_button_height"
+                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:paddingStart="@dimen/spacing_sm"
+                    android:paddingEnd="@dimen/spacing_sm"
+                    android:text="@string/btn_play"
+                    android:background="@drawable/bg_button_scan"
+                    android:textColor="@color/button_scan_text" />
+                <Button
+                    android:id="@+id/btnStopPlayback"
+                    style="@style/ButtonStyle.ActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/action_button_height"
+                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:paddingStart="@dimen/spacing_sm"
+                    android:paddingEnd="@dimen/spacing_sm"
+                    android:text="@string/btn_stop"
+                    android:background="@drawable/bg_button_disconnect"
+                    android:textColor="@color/button_disconnect_text"
+                    android:visibility="gone" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

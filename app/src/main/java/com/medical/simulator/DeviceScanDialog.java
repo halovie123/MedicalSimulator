@@ -9,6 +9,7 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,6 +52,7 @@ public class DeviceScanDialog extends DialogFragment {
     private ProgressBar         progressBar;
     private TextView            tvStatus;
     private Button              btnScanToggle;
+    private Button              btnClose;
     private boolean             isScanning = false;
 
     private DeviceSelectedListener listener;
@@ -84,6 +86,7 @@ public class DeviceScanDialog extends DialogFragment {
         progressBar   = view.findViewById(R.id.scanProgress);
         tvStatus      = view.findViewById(R.id.tvScanStatus);
         btnScanToggle = view.findViewById(R.id.btnScanToggle);
+        btnClose      = view.findViewById(R.id.btnClose);
         RecyclerView rv = view.findViewById(R.id.rvDevices);
 
         adapter = new DeviceAdapter(device -> {
@@ -100,8 +103,20 @@ public class DeviceScanDialog extends DialogFragment {
             else startScan();
         });
 
+        // Close (✕) — stop any active scan and dismiss
+        btnClose.setOnClickListener(v -> {
+            stopScan();
+            dismiss();
+        });
+
         // Auto-start scan when dialog opens
         startScan();
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        stopScan();
     }
 
     @Override

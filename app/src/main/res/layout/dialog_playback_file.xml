@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_surface"
+    android:padding="@dimen/dialog_padding">
+
+    <!-- Title row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/spacing_md">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/playback_title"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.12"
+            android:fontFamily="sans-serif-condensed" />
+
+        <Button
+            android:id="@+id/btnClose"
+            style="@style/ButtonStyle.IncrDecr"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:contentDescription="@string/scan_close"
+            android:text="@string/btn_close"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+    <!-- Hint text -->
+    <TextView
+        android:id="@+id/tvPlaybackHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_sm"
+        android:text="@string/playback_hint"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:fontFamily="sans-serif" />
+
+    <!-- Recording list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRecordings"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_list_height"
+        android:background="@color/background_panel"
+        android:clipToPadding="false"
+        android:padding="@dimen/spacing_sm" />
+
+    <!-- Empty state -->
+    <TextView
+        android:id="@+id/tvPlaybackEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_sm"
+        android:text="@string/playback_empty"
+        android:textColor="@color/text_hint"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:visibility="gone" />
+
+</LinearLayout>

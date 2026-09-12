@@ -10,6 +10,7 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -18,11 +19,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * ┌─────────────────────────────────────────────────────────────────┐
  * │  THIẾT KẾ                                                       │
  * │  • Nền đen tuyệt đối (hospital monitor style)                  │
- * │  • Sóng neon xanh #00FFAA                                       │
+ * │  • Sóng neon cyan #55E8D2                                       │
  * │  • Cuộn phải → trái mượt mà ở 60fps                            │
  * │  • Buffer 150 điểm = 3 giây (ở 50Hz)                           │
- * │  • Trục Y CỐ ĐỊNH: 0 – 160 (khớp firmware AC_MAX = 150)        │
- * │    → Sóng không bị nhảy loạn theo auto-scale                   │
+ * │  • Trục Y TỰ ĐỘNG CO GIÃN (autoscale): dữ liệu Pi gửi theo mV   │
+ * │    (0–3000 mV) nên trục Y theo dõi min/max của cửa sổ hiển thị, │
+ * │    làm mượt bằng lerp để không nhảy loạn.                       │
  * │  • Zero allocation trong hot path — không rác GC               │
  * └─────────────────────────────────────────────────────────────────┘
  *
@@ -43,17 +45,22 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
     private static final int BUFFER_SIZE = 150;
 
     /**
-     * Trục Y CỐ ĐỊNH — khớp firmware:
-     *   AC_MAX  = 150.0f  → Y_MAX = 160  (padding 10 trên đỉnh)
-     *   Giá trị âm "-10.42" có thể xảy ra → Y_MIN = -20 (padding 10 dưới đáy)
-     *   Y_RANGE = 180.0f  (dải hiển thị tổng cộng)
+     * Trục Y TỰ ĐỘNG CO GIÃN (millivolt scale).
      *
-     * Sóng sẽ KHÔNG bị nhảy loạn vì trục Y luôn cố định,
-     * khác với adaptive scale tự động co giãn theo dữ liệu.
+     * Thiết bị (Raspberry Pi / ESP32) gửi biên độ hiển thị theo mV —
+     * có thể là 0–300 mV hoặc lên tới ~3000 mV tuỳ thiết lập DC+AC.
+     * Renderer theo dõi min/max của cửa sổ 150 điểm rồi map vào canvas,
+     * với headroom 12% hai đầu và làm mượt (lerp) để trục không giật.
      */
-    private static final float Y_MIN   = -20.0f;
-    private static final float Y_MAX   = 160.0f;
-    private static final float Y_RANGE = Y_MAX - Y_MIN;   // = 180.0f
+    private static final float SCALE_MIN_SPAN    = 50f;   // span tối thiểu (mV) — đường phẳng không bị phóng quá mức
+    private static final float SCALE_HEADROOM    = 0.12f; // 12% headroom trên/dưới
+    private static final float SCALE_SMOOTHING   = 0.15f; // hệ số lerp mỗi frame (0..1)
+    private static final float SCALE_DEFAULT_MIN = 0f;
+    private static final float SCALE_DEFAULT_MAX = 100f;
+
+    /** Biên độ scale hiện tại (đơn vị mV) — cập nhật mượt mỗi frame */
+    private float scaleMin = SCALE_DEFAULT_MIN;
+    private float scaleMax = SCALE_DEFAULT_MAX;
 
     /** FPS mục tiêu render thread */
     private static final int  TARGET_FPS      = 60;
@@ -68,7 +75,7 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
     // BƯỚC 3 theo mô tả của bạn: mảng đệm tịnh tiến
     // Dùng circular buffer thay vì Array.copy() để không tốn CPU ở 50Hz.
 
-    /** Mảng đệm tròn chứa các giá trị PPG thô (0–150) */
+    /** Mảng đệm tròn chứa biên độ hiển thị (mV) từ thiết bị */
     private final float[] ring = new float[BUFFER_SIZE];
 
     /** Chỉ số ghi tiếp theo (wraps around) */
@@ -156,7 +163,7 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
      * BƯỚC 3 (theo mô tả của bạn): Thêm điểm mới vào cuối buffer FIFO.
      *
      * Gọi từ BLE callback thread, thread-safe.
-     * @param value Giá trị PPG thô từ firmware: range 0.0 – 150.0
+     * @param value Biên độ hiển thị (mV) từ thiết bị, vd 45.20 hoặc 1520.00
      */
     public void addSample(float value) {
         synchronized (ringLock) {
@@ -173,6 +180,8 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
             totalAdded = 0;
             // Không cần xoá mảng — totalAdded = 0 là đủ
         }
+        scaleMin = SCALE_DEFAULT_MIN;
+        scaleMax = SCALE_DEFAULT_MAX;
     }
 
     // ─── SurfaceHolder.Callback ───────────────────────────────────────────────
@@ -277,23 +286,43 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
         final int drawCount = Math.min(count, BUFFER_SIZE);
         if (drawCount < 2) return;
 
-        // ── BƯỚC 4: Vẽ sóng với trục Y CỐ ĐỊNH 0–160 ──
+        // Tính offset: chỉ vẽ drawCount điểm gần nhất (right-aligned)
+        final int startIdx = BUFFER_SIZE - drawCount;
+
+        // ── BƯỚC 4: Vẽ sóng với trục Y tự động co giãn (mV) ──
         //
-        // Công thức chuyển value (0–160) → pixel Y:
-        //   yPixel = vPad + drawH * (1 - (value - Y_MIN) / Y_RANGE)
-        //
-        // Giải thích:
-        //   - (value - Y_MIN) / Y_RANGE  → normalize về [0,1]
-        //   - 1 - ... → đảo trục (Y tăng xuống dưới trong canvas)
-        //   - vPad + drawH * ...          → scale vào vùng vẽ
+        // 1) Tính min/max dữ liệu của cửa sổ hiển thị
+        // 2) Thêm headroom 12% hai đầu, span tối thiểu 50 mV
+        // 3) Lerp về min/max hiện tại (làm mượt, không nhảy)
+        // 4) Map value → pixel:
+        //      yPixel = vPad + drawH * (1 - (value - scaleMin) / scaleSpan)
+
+        float dataMin = Float.MAX_VALUE;
+        float dataMax = -Float.MAX_VALUE;
+        for (int i = startIdx; i < BUFFER_SIZE; i++) {
+            final float v = snapshot[i];
+            if (v < dataMin) dataMin = v;
+            if (v > dataMax) dataMax = v;
+        }
+
+        float span = dataMax - dataMin;
+        if (span < SCALE_MIN_SPAN) {
+            final float mid = (dataMax + dataMin) * 0.5f;
+            dataMin = mid - SCALE_MIN_SPAN * 0.5f;
+            dataMax = mid + SCALE_MIN_SPAN * 0.5f;
+            span = SCALE_MIN_SPAN;
+        }
+        dataMin -= span * SCALE_HEADROOM;
+        dataMax += span * SCALE_HEADROOM;
+
+        scaleMin += (dataMin - scaleMin) * SCALE_SMOOTHING;
+        scaleMax += (dataMax - scaleMax) * SCALE_SMOOTHING;
+        final float scaleSpan = Math.max(SCALE_MIN_SPAN, scaleMax - scaleMin);
 
         final float vPad  = H * 0.06f;        // padding trên/dưới 6% chiều cao
         final float drawH = H - 2.0f * vPad;  // chiều cao vùng sóng
 
         final float xStep = (float) W / (BUFFER_SIZE - 1);
-
-        // Tính offset: chỉ vẽ drawCount điểm gần nhất (right-aligned)
-        final int startIdx = BUFFER_SIZE - drawCount;
 
         // Build mảng line segments (x0,y0,x1,y1) — không alloc gì mới
         int lineCount = 0;
@@ -301,12 +330,12 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
             final float x0 = i * xStep;
             final float x1 = (i + 1) * xStep;
 
-            // Clamp giá trị về Y_MIN..Y_MAX trước khi map
-            final float v0 = Math.max(Y_MIN, Math.min(Y_MAX, snapshot[i]));
-            final float v1 = Math.max(Y_MIN, Math.min(Y_MAX, snapshot[i + 1]));
+            // Clamp về vùng scale hiện tại trước khi map
+            final float v0 = Math.max(scaleMin, Math.min(scaleMax, snapshot[i]));
+            final float v1 = Math.max(scaleMin, Math.min(scaleMax, snapshot[i + 1]));
 
-            final float y0 = vPad + drawH * (1.0f - (v0 - Y_MIN) / Y_RANGE);
-            final float y1 = vPad + drawH * (1.0f - (v1 - Y_MIN) / Y_RANGE);
+            final float y0 = vPad + drawH * (1.0f - (v0 - scaleMin) / scaleSpan);
+            final float y1 = vPad + drawH * (1.0f - (v1 - scaleMin) / scaleSpan);
 
             final int base = lineCount * 4;
             lineBuffer[base]     = x0;
@@ -325,9 +354,10 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
         final float cursorX = (float)(startIdx + drawCount - 1) * xStep;
         canvas.drawLine(cursorX, vPad, cursorX, H - vPad, scanLinePaint);
 
-        // ── Label thông tin ──
-        canvas.drawText("0–150", 6, H - 8, labelPaint);
-        canvas.drawText("3s",    W - 28, H - 8, labelPaint);
+        // ── Label thông tin (trục Y hiện tại theo mV) ──
+        canvas.drawText(String.format(Locale.US, "%.0f–%.0f mV", scaleMin, scaleMax),
+                6, H - 8, labelPaint);
+        canvas.drawText("3s", W - 28, H - 8, labelPaint);
     }
 
     // ─── Grid ─────────────────────────────────────────────────────────────────
@@ -339,7 +369,7 @@ public class WaveformSurfaceView extends SurfaceView implements SurfaceHolder.Ca
             canvas.drawLine(x, 0, x, H, c == 0 || c == GRID_COLS || c == GRID_COLS / 2
                     ? gridMajorPaint : gridMinorPaint);
         }
-        // Đường ngang (hàng) — tương ứng Y values: 0, 40, 80, 120, 160
+        // Đường ngang (hàng) — chia đều vùng vẽ (trục Y autoscale theo mV)
         for (int r = 0; r <= GRID_ROWS; r++) {
             final float y = (float) r * H / GRID_ROWS;
             canvas.drawLine(0, y, W, y, r == 0 || r == GRID_ROWS || r == GRID_ROWS / 2

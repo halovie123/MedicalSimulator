@@ -33,6 +33,10 @@ public class SimulatorParams {
     public static final float PI_MIN   = 0.02f, PI_MAX  = 20.0f;
     public static final float NOISE_MIN = 0.0f, NOISE_MAX = 1.0f;
 
+    // ─── AC/DC Amplitude Bounds (mV) ───────────────────────────────────────────
+    public static final float AC_MV_MIN = 0f,    AC_MV_MAX = 1500f;
+    public static final float DC_MV_MIN = 0f,    DC_MV_MAX = 1500f;
+
     // ─── Fields ───────────────────────────────────────────────────────────────
     private int   heartRate       = 75;
     private int   spo2            = 98;
@@ -40,6 +44,10 @@ public class SimulatorParams {
     private float perfusionIndex  = 2.5f;
     private float noiseLevel      = 0.10f;
     private int condition = 0;
+    private float acIrMv  = 45.0f;
+    private float acRedMv = 45.0f;
+    private float dcIrMv  = 1500.0f;
+    private float dcRedMv = 1500.0f;
     public SimulatorParams() { /* defaults set above */ }
 
     public static final int CONDITION_NORMAL = 0;
@@ -78,9 +86,22 @@ public class SimulatorParams {
         condition = Math.max(0, Math.min(cond, 5));
     }
 
+    // ─── AC/DC Amplitude (mV) ─────────────────────────────────────────────────
+    public float getAcIrMv()                  { return acIrMv; }
+    public void setAcIrMv(float v)            { acIrMv = clampF(v, AC_MV_MIN, AC_MV_MAX); }
+
+    public float getAcRedMv()                 { return acRedMv; }
+    public void setAcRedMv(float v)           { acRedMv = clampF(v, AC_MV_MIN, AC_MV_MAX); }
+
+    public float getDcIrMv()                  { return dcIrMv; }
+    public void setDcIrMv(float v)            { dcIrMv = clampF(v, DC_MV_MIN, DC_MV_MAX); }
+
+    public float getDcRedMv()                 { return dcRedMv; }
+    public void setDcRedMv(float v)           { dcRedMv = clampF(v, DC_MV_MIN, DC_MV_MAX); }
+
     // ─── JSON Serialisation ───────────────────────────────────────────────────
 
-    /** Serialise to JSON command packet for ESP32. */
+    /** Serialise to JSON command packet for the device (delta merge, all keys optional). */
     public String toCommandJson() {
         return "{"
                 + "\"hr\":" + heartRate
@@ -89,6 +110,11 @@ public class SimulatorParams {
                 + ",\"pi\":" + String.format(java.util.Locale.US, "%.2f", perfusionIndex)
                 + ",\"noise\":" + String.format(java.util.Locale.US, "%.2f", noiseLevel)
                 + ",\"condition\":" + condition
+                + ",\"ac_ir_mv\":" + String.format(java.util.Locale.US, "%.2f", acIrMv)
+                + ",\"ac_red_mv\":" + String.format(java.util.Locale.US, "%.2f", acRedMv)
+                + ",\"dc_ir_mv\":" + String.format(java.util.Locale.US, "%.2f", dcIrMv)
+                + ",\"dc_red_mv\":" + String.format(java.util.Locale.US, "%.2f", dcRedMv)
+                + ",\"origin\":\"android\""
                 + "}";
     }
 

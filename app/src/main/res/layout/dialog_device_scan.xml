@@ -33,6 +33,16 @@
             android:indeterminateTint="@color/waveform_green"
             android:visibility="gone" />
 
+        <Button
+            android:id="@+id/btnClose"
+            style="@style/ButtonStyle.IncrDecr"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:contentDescription="@string/scan_close"
+            android:text="@string/btn_close"
+            android:textSize="13sp" />
+
     </LinearLayout>
 
     <!-- Status text -->
