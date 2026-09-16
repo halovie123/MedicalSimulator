@@ -261,6 +261,18 @@ public class RpiBleManager extends BleManager {
         return new EspGattCallback();
     }
 
+    /**
+     * The Pi hosts a process-owned GATT database. During BLE server debugging
+     * Android may cache an earlier connection where that custom service was not
+     * registered yet, then report a successful discovery containing only GAP,
+     * GATT and Device Information. Clear that per-device cache after disconnect
+     * so the next connection performs a real service discovery.
+     */
+    @Override
+    protected boolean shouldClearCacheWhenDisconnected() {
+        return true;
+    }
+
     private class EspGattCallback extends BleManagerGattCallback {
 
         @Override
