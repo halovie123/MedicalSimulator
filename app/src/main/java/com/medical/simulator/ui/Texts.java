@@ -44,13 +44,32 @@ public final class Texts {
         put("connected", "Connected", "Đã kết nối");
         put("connecting", "Connecting…", "Đang kết nối…");
         put("disconnected", "Not connected", "Chưa kết nối");
-        put("scan_hint", "Tap the Bluetooth icon to connect to the Pi", "Chạm biểu tượng Bluetooth để kết nối với Pi");
+        put("scan_hint", "Tap the Bluetooth icon to connect to the Pi (Bluetooth or internet)",
+                "Chạm biểu tượng Bluetooth để kết nối với Pi (Bluetooth hoặc Internet)");
         put("old_pi", "This Pi build only accepts Monitor setpoints (no BLE protocol v3)",
                 "Bản app trên Pi chỉ nhận thông số Monitor (chưa có giao thức BLE v3)");
         put("waiting_pi", "Waiting for the Pi…", "Đang chờ Pi…");
         put("disconnect_q", "Disconnect from the Pi?", "Ngắt kết nối với Pi?");
         put("disconnect", "Disconnect", "Ngắt kết nối");
         put("cancel", "Cancel", "Huỷ");
+        // connection: Bluetooth or the internet (MQTT broker)
+        put("link_choose", "Connect to the Pi", "Kết nối với Pi");
+        put("link_ble", "Bluetooth (nearby)", "Bluetooth (ở gần)");
+        put("link_mqtt", "Internet (MQTT broker)", "Internet (máy chủ MQTT)");
+        put("via_ble", "Bluetooth", "Bluetooth");
+        put("via_mqtt", "Internet", "Internet");
+        put("broker_host", "Broker host or IP", "Máy chủ broker (tên hoặc IP)");
+        put("port", "Port", "Cổng");
+        put("tls", "TLS encryption (required over the internet)", "Mã hoá TLS (bắt buộc khi qua Internet)");
+        put("device_id", "Pi device id", "Mã thiết bị Pi");
+        put("username", "User name", "Tên đăng nhập");
+        put("password", "Password", "Mật khẩu");
+        put("ca_import", "Import CA…", "Nhập CA…");
+        put("ca_none", "Trust: system CAs", "Tin cậy: CA của hệ thống");
+        put("ca_loaded", "Trust: private CA only", "Tin cậy: chỉ CA riêng");
+        put("connect", "Connect", "Kết nối");
+        put("pi_offline", "broker reached, Pi offline", "đã tới broker, Pi chưa kết nối");
+        put("tls_off", "no TLS", "không TLS");
         // monitor
         put("start", "Start output", "Phát");
         put("stop", "Stop output", "Dừng phát");

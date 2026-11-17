@@ -109,9 +109,14 @@ Các lệnh thao tác được gửi riêng để không bị trộn với gói 
 
 Gói Status có thể chứa các thông số ở trên cùng với `running`, `recording`, `record_file`, `pb`, `pb_file`, `origin` và `seq`. Giá trị `pb` là `0` (không phát), `1` (đang phát) hoặc `2` (tạm dừng). Raspberry Pi là nguồn trạng thái chuẩn cho các thay đổi có `origin: "rpi"`.
 
-## Ghi và phát lại dữ liệu
+## Kết nối qua Internet (MQTT, nhánh thử `feature/mqtt-remote-db`)
 
-Như app Pi: Record CSV ghi trên Raspberry Pi (`dataset/data_<n>.csv`), trang Recordings liệt kê và phát lại các tệp đó trên Pi. Ứng dụng không còn ghi hay phát CSV trên điện thoại (`PpgRecorder`, `PpgPlayback`, `PlaybackDialog` đã bỏ).
+Ngoài Bluetooth, ứng dụng điều khiển được Pi từ xa qua một broker MQTT có TLS. Lệnh, sóng TX/RX và trạng thái các trang vẫn là đúng các gói của giao thức BLE v2/v3, chỉ đổi đường truyền (`remote/MqttLink.java`). Topic theo mã thiết bị Pi: `ppgsim/<id>/cmd`, `client`, `status`, `online`, `stream`, `ui`. Mô tả đầy đủ, cách dựng broker thử và ghi chú bảo mật ở `PPG_simulator_raspi/docs/remote_mqtt.md`.
+
+Cách dùng: chạm biểu tượng Bluetooth → **Internet (máy chủ MQTT)** → nhập máy chủ broker, cổng (8883 khi bật TLS), mã thiết bị Pi, tên đăng nhập, mật khẩu; với CA riêng của bản thử, bấm **Nhập CA…** và chọn tệp `ca.crt`. Cài đặt được lưu trong bộ nhớ riêng của ứng dụng. Chân trang hiện `Internet · <mã Pi>`; nếu broker kết nối được nhưng Pi chưa trực tuyến, dòng này chuyển màu vàng.
+
+
+Như app Pi: Record CSV ghi trên Raspberry Pi (`dataset/data_<n>.csv`), trang Recordings liệt kê và phát lại các tệp đó trên Pi. Khi Pi được cấu hình đồng bộ, mỗi bản ghi còn được sao lên cơ sở dữ liệu PostgreSQL; danh sách hiện `✓ DB` (đã lên DB), `… DB` (đang chờ) hoặc `✗ DB` (lỗi). Ứng dụng không còn ghi hay phát CSV trên điện thoại (`PpgRecorder`, `PpgPlayback`, `PlaybackDialog` đã bỏ).
 
 ## Cấu trúc dự án
 
@@ -127,6 +132,8 @@ MedicalSimulator/
 │       │   ├── ble/RpiBleManager.java      # v1–v3 characteristics
 │       │   ├── pages/                      # Monitor, Calibration, Recordings, Neural, Signal setup
 │       │   ├── remote/Streams.java         # 8 s TX/RX gần nhất từ Stream
+│       │   ├── remote/MqttLink.java        # đường Internet: cùng gói BLE qua broker MQTT
+│       │   ├── remote/RemoteDialog.java    # form broker, nhập CA
 │       │   └── ui/                         # Ui (bảng màu Pi), LaneView, ValueControl, Choice, Texts
 │       └── res/
 │           ├── layout/
@@ -181,6 +188,7 @@ app/build/outputs/apk/debug/app-debug.apk
 | `BLUETOOTH_SCAN`, `BLUETOOTH_CONNECT` | Android 12 trở lên |
 | `BLUETOOTH_ADVERTISE` | Khai báo khả năng BLE trên Android 12 trở lên |
 | `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_CONNECTED_DEVICE` | Được khai báo trong manifest |
+| `INTERNET`, `ACCESS_NETWORK_STATE` | Kết nối broker MQTT |
 
 Manifest chưa khai báo foreground service; các quyền trên không bảo đảm ứng dụng duy trì BLE khi chạy nền.
 

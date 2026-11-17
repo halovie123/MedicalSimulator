@@ -591,7 +591,7 @@ public class RpiBleManager extends BleManager {
         public final int pb;                       // PB_* or PB_UNKNOWN if absent
         @Nullable public final String  pbFile;
 
-        StatusPacket(@NonNull JSONObject o) {
+        public StatusPacket(@NonNull JSONObject o) {
             String origin = null;
             try { origin = o.has("origin") ? o.getString("origin") : null; } catch (Exception ignored) {}
             this.origin     = origin;

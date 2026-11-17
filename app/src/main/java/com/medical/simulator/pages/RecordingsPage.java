@@ -37,6 +37,7 @@ public class RecordingsPage extends Page {
     private final TextView[] metricNames = new TextView[4], metricValues = new TextView[4];
     private final List<String[]> chunks = new ArrayList<>();
     private List<String> shownNames = new ArrayList<>();
+    private String sync = "", shownSync = "";   // database copy per listed name: s synced, p pending, e error
     private String selected = "";
     private boolean playing;
     private double position, duration;
@@ -144,19 +145,21 @@ public class RecordingsPage extends Page {
         playBtn.setEnabled(!selected.isEmpty());
         List<String> names = new ArrayList<>();
         for (String[] chunk : chunks) if (chunk != null) names.addAll(Arrays.asList(chunk));
-        if (names.equals(shownNames) && files.getChildCount() > 0) {
+        if (names.equals(shownNames) && sync.equals(shownSync) && files.getChildCount() > 0) {
             highlight();
             return;
         }
         shownNames = names;
+        shownSync = sync;
         files.removeAllViews();
         if (names.isEmpty()) {
             TextView empty = Ui.text(c, Texts.t("empty"), 10, false, Ui.MUTED);
             empty.setPadding(Ui.dp(c, 4), Ui.dp(c, 8), Ui.dp(c, 4), 0);
             files.addView(empty);
         }
-        for (String name : names) {
-            Button b = Ui.outline(c, "☰  " + name, 11);
+        for (int i = 0; i < names.size(); i++) {
+            final String name = names.get(i);
+            Button b = Ui.outline(c, "☰  " + name + syncMark(i), 11);
             b.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
             b.setTag(name);
             b.setOnClickListener(v -> {
@@ -170,6 +173,17 @@ public class RecordingsPage extends Page {
             files.addView(b, lp);
         }
         highlight();
+    }
+
+    /** The Pi's database mark after a file name (Pi: SYNC_MARKS in ui/frames/playback_frame.py). */
+    private String syncMark(int index) {
+        if (index >= sync.length()) return "";
+        switch (sync.charAt(index)) {
+            case 's': return "   ✓ DB";
+            case 'p': return "   … DB";
+            case 'e': return "   ✗ DB";
+            default: return "";
+        }
     }
 
     private void highlight() {
@@ -193,6 +207,9 @@ public class RecordingsPage extends Page {
             String[] names = new String[f == null ? 0 : f.length()];
             for (int i = 0; i < names.length; i++) names[i] = f.optString(i);
             if (index >= 0 && index < count) chunks.set(index, names);
+            paint();
+        } else if ("sy".equals(kind)) {
+            sync = part.optString("s", "");
             paint();
         } else if ("rec".equals(kind)) {
             String sel = part.optString("sel", "");
