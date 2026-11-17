@@ -14,13 +14,20 @@ import java.util.regex.Pattern;
 public final class RemoteSettings {
     private static final String PREFS = "remote_mqtt";
     private static final Pattern DEVICE_ID = Pattern.compile("^[A-Za-z0-9_-]{1,32}$");
+    private static final Pattern PIN = Pattern.compile("^[0-9a-f]{64}$");
 
-    public final String host, deviceId, username, password, caPem;
+    /** caPem: a private CA imported from a file; caPin: SHA-256 of a private CA from the pairing QR. */
+    public final String host, deviceId, username, password, caPem, caPin;
     public final int port;
     public final boolean tls;
 
     public RemoteSettings(String host, int port, boolean tls, String deviceId, String username, String password,
                           String caPem) {
+        this(host, port, tls, deviceId, username, password, caPem, "");
+    }
+
+    public RemoteSettings(String host, int port, boolean tls, String deviceId, String username, String password,
+                          String caPem, String caPin) {
         this.host = host.trim();
         this.port = port;
         this.tls = tls;
@@ -28,6 +35,7 @@ public final class RemoteSettings {
         this.username = username.trim();
         this.password = password;
         this.caPem = caPem == null ? "" : caPem;
+        this.caPin = caPin == null ? "" : caPin;
     }
 
     /** Why these settings cannot be used, or null when they can. */
@@ -36,6 +44,7 @@ public final class RemoteSettings {
         if (port < 1 || port > 65535) return "Port";
         if (!DEVICE_ID.matcher(deviceId).matches()) return "Pi device id (letters, digits, - _)";
         if (!caPem.isEmpty() && !caPem.contains("BEGIN CERTIFICATE")) return "CA certificate";
+        if (!caPin.isEmpty() && !PIN.matcher(caPin).matches()) return "CA fingerprint";
         return null;
     }
 
@@ -43,13 +52,13 @@ public final class RemoteSettings {
         SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         return new RemoteSettings(p.getString("host", ""), p.getInt("port", 8883), p.getBoolean("tls", true),
                 p.getString("device", "pi4-lab1"), p.getString("user", ""), p.getString("pass", ""),
-                p.getString("ca", ""));
+                p.getString("ca", ""), p.getString("ca_pin", ""));
     }
 
     public void save(@NonNull Context c) {
         c.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
                 .putString("host", host).putInt("port", port).putBoolean("tls", tls)
                 .putString("device", deviceId).putString("user", username).putString("pass", password)
-                .putString("ca", caPem).apply();
+                .putString("ca", caPem).putString("ca_pin", caPin).apply();
     }
 }

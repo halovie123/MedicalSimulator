@@ -70,6 +70,14 @@ public final class Texts {
         put("connect", "Connect", "Kết nối");
         put("pi_offline", "broker reached, Pi offline", "đã tới broker, Pi chưa kết nối");
         put("tls_off", "no TLS", "không TLS");
+        put("pair_connect", "Connect to %s", "Kết nối với %s");
+        put("pair_scan", "Scan the Pi's QR code", "Quét mã QR của Pi");
+        put("link_mqtt_manual", "Internet (manual settings)", "Internet (nhập tay)");
+        put("qr_prompt", "Point the camera at the QR code on the Pi (Phone button on its menu)",
+                "Hướng camera vào mã QR trên Pi (nút Điện thoại trên menu của Pi)");
+        put("qr_bad", "Not a simulator code: %s", "Không phải mã của trình mô phỏng: %s");
+        put("pair_saved", "Paired with %s", "Đã ghép đôi với %s");
+        put("ca_paired", "Trust: CA of the paired Pi", "Tin cậy: CA của Pi đã ghép đôi");
         // monitor
         put("start", "Start output", "Phát");
         put("stop", "Stop output", "Dừng phát");

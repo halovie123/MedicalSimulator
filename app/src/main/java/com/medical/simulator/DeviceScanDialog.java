@@ -46,6 +46,9 @@ public class DeviceScanDialog extends DialogFragment {
     }
 
     private static final long SCAN_TIMEOUT_MS = 12_000;
+    /** One simulator alone in range for this long is connected without a tap. */
+    private static final long AUTO_PICK_MS = 1_500;
+    private boolean autoPickPending;
 
     private BluetoothLeScanner  scanner;
     private DeviceAdapter       adapter;
@@ -89,11 +92,7 @@ public class DeviceScanDialog extends DialogFragment {
         btnClose      = view.findViewById(R.id.btnClose);
         RecyclerView rv = view.findViewById(R.id.rvDevices);
 
-        adapter = new DeviceAdapter(device -> {
-            stopScan();
-            dismiss();
-            if (listener != null) listener.onDeviceSelected(device);
-        });
+        adapter = new DeviceAdapter(this::select);
 
         rv.setLayoutManager(new LinearLayoutManager(requireContext()));
         rv.setAdapter(adapter);
@@ -111,6 +110,22 @@ public class DeviceScanDialog extends DialogFragment {
 
         // Auto-start scan when dialog opens
         startScan();
+    }
+
+    private void select(@NonNull BluetoothDevice device) {
+        stopScan();
+        if (isAdded()) dismiss();
+        if (listener != null) listener.onDeviceSelected(device);
+    }
+
+    /** The scan filter only reports simulators; when exactly one answers, take it. */
+    private void maybeAutoPick() {
+        if (autoPickPending || adapter.getItemCount() != 1) return;
+        autoPickPending = true;
+        handler.postDelayed(() -> {
+            autoPickPending = false;
+            if (isScanning && adapter.getItemCount() == 1) select(adapter.first());
+        }, AUTO_PICK_MS);
     }
 
     @Override
@@ -192,6 +207,7 @@ public class DeviceScanDialog extends DialogFragment {
         if (!isScanning) return;
         isScanning = false;
         handler.removeCallbacksAndMessages(null);
+        autoPickPending = false;
 
         if (scanner != null) {
             try { scanner.stopScan(scanCallback); } catch (Exception ignored) {}
@@ -226,7 +242,10 @@ public class DeviceScanDialog extends DialogFragment {
 
             final String finalName = name;
             final boolean finalIsSim = isSim;
-            handler.post(() -> adapter.addOrUpdate(result.getDevice(), finalName, result.getRssi(), finalIsSim));
+            handler.post(() -> {
+                adapter.addOrUpdate(result.getDevice(), finalName, result.getRssi(), finalIsSim);
+                maybeAutoPick();
+            });
         }
 
         @Override
@@ -265,6 +284,8 @@ public class DeviceScanDialog extends DialogFragment {
         DeviceAdapter(OnDeviceClickListener listener) {
             this.listener = listener;
         }
+
+        BluetoothDevice first() { return items.get(0).device; }
 
         void addOrUpdate(BluetoothDevice device, String name, int rssi, boolean isSimulator) {
             String addr = device.getAddress();

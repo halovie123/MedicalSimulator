@@ -37,11 +37,15 @@ import com.medical.simulator.pages.Page;
 import com.medical.simulator.pages.RecordingsPage;
 import com.medical.simulator.pages.SignalSetupDialog;
 import com.medical.simulator.remote.MqttLink;
+import com.medical.simulator.remote.Pairing;
 import com.medical.simulator.remote.RemoteDialog;
 import com.medical.simulator.remote.RemoteSettings;
 import com.medical.simulator.remote.Streams;
 import com.medical.simulator.ui.Texts;
 import com.medical.simulator.ui.Ui;
+
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -98,6 +102,9 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
     private TextView connText, modeChip, counters, version, clock;
     private final SimpleDateFormat clockFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
 
+    /** What to do once Bluetooth permissions are granted and the adapter is on (scan, or connect by address). */
+    private Runnable afterBluetoothReady;
+
     private final ActivityResultLauncher<String[]> permissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), results -> {
                 for (boolean granted : results.values()) {
@@ -106,14 +113,24 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
                         return;
                     }
                 }
-                openScan();
+                Runnable next = afterBluetoothReady;
+                afterBluetoothReady = null;
+                if (next != null) next.run();
             });
+
+    private final ActivityResultLauncher<ScanOptions> qrScanner =
+            registerForActivityResult(new ScanContract(), r -> onQrScanned(r.getContents()));
 
     private final ActivityResultLauncher<String[]> caPicker =
             registerForActivityResult(new ActivityResultContracts.OpenDocument(), this::onCaPicked);
 
     private final ActivityResultLauncher<Intent> enableBluetooth =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r -> openScan());
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r -> {
+                Runnable next = afterBluetoothReady;
+                afterBluetoothReady = null;
+                BluetoothAdapter a = BluetoothAdapter.getDefaultAdapter();
+                if (next != null && a != null && a.isEnabled()) next.run();
+            });
 
     private final Runnable tick = new Runnable() {
         @Override public void run() {
@@ -161,6 +178,20 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
         });
         paintConnection();
         handler.post(tick);
+        autoConnect();
+    }
+
+    /** Reconnect by itself to the link that last worked, unless the user disconnected it on purpose. */
+    private void autoConnect() {
+        Pairing paired = Pairing.load(this);
+        String last = Pairing.lastLink(this);
+        if (paired == null || last.isEmpty()) return;
+        if (Pairing.LINK_MQTT.equals(last) && paired.internet != null) {
+            connectRemote(paired.internet);
+        } else if (Pairing.LINK_BLE.equals(last) && !paired.bleAddress.isEmpty() && hasBluetoothPermissions()) {
+            BluetoothAdapter a = BluetoothAdapter.getDefaultAdapter();
+            if (a != null && a.isEnabled()) connectBleAddress(paired.bleName, paired.bleAddress);
+        }
     }
 
     @Override
@@ -297,12 +328,23 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
 
     private void onBluetoothTapped() {
         if (state == RpiBleManager.ConnectionState.DISCONNECTED) {
+            // One tap for a Pi this phone knows; otherwise scanning the Pi's QR is the quickest way in.
+            Pairing paired = Pairing.load(this);
+            List<String> items = new ArrayList<>();
+            List<Runnable> actions = new ArrayList<>();
+            if (paired != null) {
+                items.add(String.format(Texts.t("pair_connect"), paired.label()));
+                actions.add(() -> connectPaired(paired));
+            }
+            items.add(Texts.t("pair_scan"));
+            actions.add(this::scanQr);
+            items.add(Texts.t("link_ble"));
+            actions.add(this::openScan);
+            items.add(Texts.t("link_mqtt_manual"));
+            actions.add(() -> remoteDialog.show(RemoteSettings.load(this), this::connectRemote));
             new AlertDialog.Builder(this)
                     .setTitle(Texts.t("link_choose"))
-                    .setItems(new String[]{Texts.t("link_ble"), Texts.t("link_mqtt")}, (d, which) -> {
-                        if (which == 0) openScan();
-                        else remoteDialog.show(RemoteSettings.load(this), this::connectRemote);
-                    })
+                    .setItems(items.toArray(new String[0]), (d, which) -> actions.get(which).run())
                     .setNegativeButton(Texts.t("cancel"), null)
                     .show();
             return;
@@ -310,6 +352,7 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
         new AlertDialog.Builder(this)
                 .setMessage(Texts.t("disconnect_q"))
                 .setPositiveButton(Texts.t("disconnect"), (d, w) -> {
+                    Pairing.setLastLink(this, null);      // disconnected on purpose: no auto-reconnect
                     if (link == Link.MQTT) mqtt.disconnect();
                     else ble.disconnectAndClose();
                 })
@@ -323,6 +366,75 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
         piOnline = false;
         deviceName = settings.deviceId + (settings.tls ? "" : " · " + Texts.t("tls_off"));
         mqtt.connect(settings);
+    }
+
+    private void scanQr() {
+        ScanOptions o = new ScanOptions();
+        o.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
+        o.setPrompt(Texts.t("qr_prompt"));
+        o.setBeepEnabled(false);
+        o.setOrientationLocked(false);
+        qrScanner.launch(o);
+    }
+
+    private void onQrScanned(String text) {
+        if (text == null) return;                   // cancelled
+        Pairing paired;
+        try {
+            paired = Pairing.parse(text);
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(this, String.format(Texts.t("qr_bad"), e.getMessage()), Toast.LENGTH_LONG).show();
+            return;
+        }
+        paired.save(this);
+        Toast.makeText(this, String.format(Texts.t("pair_saved"), paired.label()), Toast.LENGTH_SHORT).show();
+        connectPaired(paired);
+    }
+
+    /** The internet link when the Pi offers one (works near and far), Bluetooth otherwise. */
+    private void connectPaired(@NonNull Pairing paired) {
+        if (paired.internet != null) connectRemote(paired.internet);
+        else connectBleAddress(paired.bleName, paired.bleAddress);
+    }
+
+    /** Bluetooth straight to a known address: no scan list. */
+    private void connectBleAddress(String name, String address) {
+        Runnable go = () -> {
+            BluetoothAdapter a = BluetoothAdapter.getDefaultAdapter();
+            if (a == null || !BluetoothAdapter.checkBluetoothAddress(address)) return;
+            if (mqtt.isConnected() || link == Link.MQTT) mqtt.disconnect();
+            deviceName = name.isEmpty() ? address : name;
+            switchLink(Link.BLE);
+            ble.connectToDevice(a.getRemoteDevice(address));
+        };
+        whenBluetoothReady(go);
+    }
+
+    /** Run `next` now if Bluetooth may be used, else after the permission prompt / enable request. */
+    private void whenBluetoothReady(Runnable next) {
+        if (!hasBluetoothPermissions()) {
+            afterBluetoothReady = next;
+            List<String> perms = new ArrayList<>();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                perms.add(Manifest.permission.BLUETOOTH_SCAN);
+                perms.add(Manifest.permission.BLUETOOTH_CONNECT);
+            } else {
+                perms.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+            permissionLauncher.launch(perms.toArray(new String[0]));
+            return;
+        }
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if (adapter == null) {
+            Toast.makeText(this, "Bluetooth not supported", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!adapter.isEnabled()) {
+            afterBluetoothReady = next;
+            enableBluetooth.launch(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE));
+            return;
+        }
+        next.run();
     }
 
     /** The CA file picked in the broker form: read as PEM text (small files only). */
@@ -346,29 +458,11 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
     }
 
     private void openScan() {
-        if (!hasBluetoothPermissions()) {
-            List<String> perms = new ArrayList<>();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                perms.add(Manifest.permission.BLUETOOTH_SCAN);
-                perms.add(Manifest.permission.BLUETOOTH_CONNECT);
-            } else {
-                perms.add(Manifest.permission.ACCESS_FINE_LOCATION);
-            }
-            permissionLauncher.launch(perms.toArray(new String[0]));
-            return;
-        }
-        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        if (adapter == null) {
-            Toast.makeText(this, "Bluetooth not supported", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!adapter.isEnabled()) {
-            enableBluetooth.launch(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE));
-            return;
-        }
-        DeviceScanDialog dialog = new DeviceScanDialog();
-        dialog.setDeviceSelectedListener(this::connectTo);
-        dialog.show(getSupportFragmentManager(), "scan");
+        whenBluetoothReady(() -> {
+            DeviceScanDialog dialog = new DeviceScanDialog();
+            dialog.setDeviceSelectedListener(this::connectTo);
+            dialog.show(getSupportFragmentManager(), "scan");
+        });
     }
 
     private void connectTo(@NonNull BluetoothDevice device) {
@@ -379,6 +473,7 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
             name = device.getAddress();
         }
         deviceName = name;
+        Pairing.rememberBle(this, name, device.getAddress());
         if (mqtt.isConnected() || link == Link.MQTT) mqtt.disconnect();
         switchLink(Link.BLE);
         ble.connectToDevice(device);
@@ -407,6 +502,7 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
         RpiBleManager.ConnectionState before = state;
         state = s == null ? RpiBleManager.ConnectionState.DISCONNECTED : s;
         if (state == RpiBleManager.ConnectionState.CONNECTED && before != state) {
+            Pairing.setLastLink(this, link == Link.MQTT ? Pairing.LINK_MQTT : Pairing.LINK_BLE);
             piView = "";
             if (connected()) send(obj("view", current.view()));   // the Pi shows the page the phone is on
         } else if (state == RpiBleManager.ConnectionState.DISCONNECTED) {

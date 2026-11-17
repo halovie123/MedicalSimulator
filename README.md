@@ -113,7 +113,9 @@ Gói Status có thể chứa các thông số ở trên cùng với `running`, `
 
 Ngoài Bluetooth, ứng dụng điều khiển được Pi từ xa qua một broker MQTT có TLS. Lệnh, sóng TX/RX và trạng thái các trang vẫn là đúng các gói của giao thức BLE v2/v3, chỉ đổi đường truyền (`remote/MqttLink.java`). Topic theo mã thiết bị Pi: `ppgsim/<id>/cmd`, `client`, `status`, `online`, `stream`, `ui`. Mô tả đầy đủ, cách dựng broker thử và ghi chú bảo mật ở `PPG_simulator_raspi/docs/remote_mqtt.md`.
 
-Cách dùng: chạm biểu tượng Bluetooth → **Internet (máy chủ MQTT)** → nhập máy chủ broker, cổng (8883 khi bật TLS), mã thiết bị Pi, tên đăng nhập, mật khẩu; với CA riêng của bản thử, bấm **Nhập CA…** và chọn tệp `ca.crt`. Cài đặt được lưu trong bộ nhớ riêng của ứng dụng. Chân trang hiện `Internet · <mã Pi>`; nếu broker kết nối được nhưng Pi chưa trực tuyến, dòng này chuyển màu vàng.
+Cách nhanh nhất: trên Pi bấm **Điện thoại** ở menu trái để hiện mã QR; trên điện thoại chạm biểu tượng Bluetooth → **Quét mã QR của Pi**. Ứng dụng lưu Pi đó và kết nối ngay (qua Internet nếu Pi đã cài broker, nếu không thì Bluetooth thẳng tới địa chỉ của Pi, không cần danh sách quét). Những lần sau mở app sẽ tự kết nối lại; bấm **Ngắt kết nối** thì thôi tự kết nối cho tới lần kết nối sau. Mã QR chứa vân tay SHA-256 của CA riêng, điện thoại chỉ tin CA khớp vân tay đó. Khi quét Bluetooth thủ công, nếu chỉ có một Pi trả lời trong 1,5 s thì app tự chọn.
+
+Nhập tay: chạm biểu tượng Bluetooth → **Internet (nhập tay)** → nhập máy chủ broker, cổng (8883 khi bật TLS), mã thiết bị Pi, tên đăng nhập, mật khẩu; với CA riêng của bản thử, bấm **Nhập CA…** và chọn tệp `ca.crt`. Cài đặt được lưu trong bộ nhớ riêng của ứng dụng. Chân trang hiện `Internet · <mã Pi>`; nếu broker kết nối được nhưng Pi chưa trực tuyến, dòng này chuyển màu vàng.
 
 
 Như app Pi: Record CSV ghi trên Raspberry Pi (`dataset/data_<n>.csv`), trang Recordings liệt kê và phát lại các tệp đó trên Pi. Khi Pi được cấu hình đồng bộ, mỗi bản ghi còn được sao lên cơ sở dữ liệu PostgreSQL; danh sách hiện `✓ DB` (đã lên DB), `… DB` (đang chờ) hoặc `✗ DB` (lỗi). Ứng dụng không còn ghi hay phát CSV trên điện thoại (`PpgRecorder`, `PpgPlayback`, `PlaybackDialog` đã bỏ).
@@ -134,6 +136,7 @@ MedicalSimulator/
 │       │   ├── remote/Streams.java         # 8 s TX/RX gần nhất từ Stream
 │       │   ├── remote/MqttLink.java        # đường Internet: cùng gói BLE qua broker MQTT
 │       │   ├── remote/RemoteDialog.java    # form broker, nhập CA
+│       │   ├── remote/Pairing.java         # mã QR ghép đôi, Pi đã nhớ, tự kết nối lại
 │       │   └── ui/                         # Ui (bảng màu Pi), LaneView, ValueControl, Choice, Texts
 │       └── res/
 │           ├── layout/
@@ -189,6 +192,7 @@ app/build/outputs/apk/debug/app-debug.apk
 | `BLUETOOTH_ADVERTISE` | Khai báo khả năng BLE trên Android 12 trở lên |
 | `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_CONNECTED_DEVICE` | Được khai báo trong manifest |
 | `INTERNET`, `ACCESS_NETWORK_STATE` | Kết nối broker MQTT |
+| `CAMERA` | Quét mã QR ghép đôi (do thư viện zxing-android-embedded khai báo, chỉ hỏi khi quét) |
 
 Manifest chưa khai báo foreground service; các quyền trên không bảo đảm ứng dụng duy trì BLE khi chạy nền.
 

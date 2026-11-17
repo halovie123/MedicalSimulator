@@ -26,13 +26,17 @@ import org.json.JSONObject;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
+import java.security.MessageDigest;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * The Pi over the internet: the same BLE v2/v3 payloads carried by an MQTT broker (Pi side:
@@ -99,7 +103,8 @@ public class MqttLink {
             o.setConnectionTimeout(TIMEOUT_S);
             if (!s.username.isEmpty()) o.setUserName(s.username);
             if (!s.password.isEmpty()) o.setPassword(s.password.toCharArray());
-            if (s.tls && !s.caPem.isEmpty()) o.setSocketFactory(socketFactoryFor(s.caPem));
+            if (s.tls && !s.caPin.isEmpty()) o.setSocketFactory(pinnedSocketFactory(s.caPin));
+            else if (s.tls && !s.caPem.isEmpty()) o.setSocketFactory(socketFactoryFor(s.caPem));
             c.setCallback(callback);
             client = c;
             c.connect(o, null, new IMqttActionListener() {
@@ -223,6 +228,62 @@ public class MqttLink {
         Throwable cause = e.getCause() != null ? e.getCause() : e;
         String m = cause.getMessage();
         return m != null ? m : cause.getClass().getSimpleName();
+    }
+
+    /**
+     * TLS for a CA known only by its SHA-256 (from the pairing QR): the broker sends its chain, the CA in it
+     * whose DER hash matches becomes the only trust anchor, and the chain is then validated against it as usual
+     * (signature, dates). Paho still checks the host name.
+     */
+    private static SSLSocketFactory pinnedSocketFactory(String pinHex) throws Exception {
+        TrustManagerFactory system = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        X509TrustManager pinned = new X509TrustManager() {
+            @Override public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                throw new CertificateException("client certificates are not used");
+            }
+
+            @Override public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                X509Certificate anchor = null;
+                for (X509Certificate cert : chain) {
+                    if (pinHex.equals(sha256Hex(cert.getEncoded()))) anchor = cert;
+                }
+                if (anchor == null) throw new CertificateException("broker CA does not match the paired Pi");
+                try {
+                    KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+                    ks.load(null, null);
+                    ks.setCertificateEntry("paired-ca", anchor);
+                    TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                    tmf.init(ks);
+                    for (TrustManager tm : tmf.getTrustManagers()) {
+                        if (tm instanceof X509TrustManager) {
+                            ((X509TrustManager) tm).checkServerTrusted(chain, authType);
+                            return;
+                        }
+                    }
+                } catch (CertificateException e) {
+                    throw e;
+                } catch (Exception e) {
+                    throw new CertificateException(e);
+                }
+                throw new CertificateException("no X509 trust manager");
+            }
+
+            @Override public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
+        };
+        SSLContext ctx = SSLContext.getInstance("TLS");
+        ctx.init(null, new TrustManager[]{pinned}, null);
+        return ctx.getSocketFactory();
+    }
+
+    private static String sha256Hex(byte[] data) throws CertificateException {
+        try {
+            byte[] d = MessageDigest.getInstance("SHA-256").digest(data);
+            StringBuilder sb = new StringBuilder(d.length * 2);
+            for (byte b : d) sb.append(String.format(java.util.Locale.US, "%02x", b));
+            return sb.toString();
+        } catch (Exception e) {
+            throw new CertificateException(e);
+        }
     }
 
     /** TLS that trusts only the given CA (PEM): the trial broker's private CA. */

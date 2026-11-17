@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- ─── Bluetooth Permissions ──────────────────────────────────────────── -->
 
@@ -62,6 +63,11 @@
             </intent-filter>
         </activity>
 
+        <!-- QR scanner (zxing-android-embedded): follow the device rotation like the rest of the app -->
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="fullSensor"
+            tools:replace="screenOrientation" />
     </application>
 
 </manifest>

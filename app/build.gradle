@@ -60,6 +60,9 @@ dependencies {
     // MQTT client for the internet link (plain Java client; the Android service module is not used)
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 
+    // QR scanner for pairing with the Pi (camera, works offline; no Play services needed)
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+
     // AndroidX LiveData / ViewModel
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.7.0'
     implementation 'androidx.lifecycle:lifecycle-livedata:2.7.0'

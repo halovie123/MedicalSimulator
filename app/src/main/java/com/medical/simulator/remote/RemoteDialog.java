@@ -22,7 +22,7 @@ public class RemoteDialog {
 
     private final Context c;
     private final Runnable pickCa;
-    private String caPem = "";
+    private String caPem = "", caPin = "";
     private TextView caState;
 
     public RemoteDialog(@NonNull Context context, @NonNull Runnable pickCa) {
@@ -33,11 +33,12 @@ public class RemoteDialog {
     /** A CA picked by the user (PEM text), shown in the open form. */
     public void setCa(String pem) {
         caPem = pem == null ? "" : pem;
+        caPin = "";                       // an imported file, or ✕, replaces the CA paired by QR
         if (caState != null) paintCa();
     }
 
     private void paintCa() {
-        caState.setText(Texts.t(caPem.isEmpty() ? "ca_none" : "ca_loaded"));
+        caState.setText(Texts.t(!caPem.isEmpty() ? "ca_loaded" : !caPin.isEmpty() ? "ca_paired" : "ca_none"));
     }
 
     private EditText field(LinearLayout form, String label, String value, int type) {
@@ -56,6 +57,7 @@ public class RemoteDialog {
 
     public void show(@NonNull RemoteSettings current, @NonNull OnConnect onConnect) {
         caPem = current.caPem;
+        caPin = current.caPin;
         LinearLayout form = Ui.column(c);
         int p = Ui.dp(c, 16);
         form.setPadding(p, Ui.dp(c, 4), p, 0);
@@ -107,7 +109,7 @@ public class RemoteDialog {
                 portValue = -1;
             }
             RemoteSettings s = new RemoteSettings(host.getText().toString(), portValue, tls.isChecked(),
-                    device.getText().toString(), user.getText().toString(), pass.getText().toString(), caPem);
+                    device.getText().toString(), user.getText().toString(), pass.getText().toString(), caPem, caPin);
             String problem = s.problem();
             if (problem != null) {
                 Toast.makeText(c, problem, Toast.LENGTH_SHORT).show();
