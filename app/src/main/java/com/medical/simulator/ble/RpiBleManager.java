@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -22,7 +24,14 @@ import no.nordicsemi.android.ble.data.Data;
 import org.json.JSONObject;
 
 /**
- * BLE manager cho ESP32-S3 PPG Medical Simulator.
+ * BLE manager for the Raspberry Pi PPG simulator (Pi side: PPG_simulator_raspi comm/ble_server.py).
+ *
+ * Protocol v3 adds two Pi -> app characteristics that let this app mirror every page of the Pi app:
+ * STREAM (...def4, TX/RX samples of the page on screen) and UI (...def5, page state as small JSON parts).
+ * See PPG_simulator_raspi docs/ble_protocol.md and comm/ble_remote.py. Each frame of those two is handed to
+ * {@link RemoteListener} on the main thread one by one (LiveData would drop frames that arrive close together).
+ *
+ * Historical notes below describe the v1/v2 characteristics, still used unchanged.
  *
  * ┌─────────────────────────────────────────────────────────────────┐
  * │  CÁCH TÌM UUID ĐÚNG TỪ FIRMWARE ESP32                           │
@@ -64,10 +73,32 @@ public class RpiBleManager extends BleManager {
     public static final UUID STATUS_UUID =
             UUID.fromString("12345678-1234-5678-1234-56789abcdef3");
 
+    /** Notify: Pi → app — v3 TX/RX sample stream "T<ir>,<red>;...|R<ir>,<red>;..." (~10 Hz). */
+    public static final UUID STREAM_UUID =
+            UUID.fromString("12345678-1234-5678-1234-56789abcdef4");
+
+    /** Notify + read: Pi → app — v3 page state, one JSON part {"k": kind, ...} per notification. */
+    public static final UUID UI_UUID =
+            UUID.fromString("12345678-1234-5678-1234-56789abcdef5");
+
+    /** Largest ATT MTU Android can negotiate; the Pi keeps every v3 frame under 240 bytes anyway. */
+    private static final int REQUESTED_MTU = 517;
+
+    /** Receives the v3 frames on the main thread. */
+    public interface RemoteListener {
+        void onStreamFrame(@NonNull String frame);
+        void onUiPart(@NonNull JSONObject part);
+    }
+
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    @Nullable private volatile RemoteListener remoteListener;
+
     // ─── GATT characteristics ─────────────────────────────────────────
     @Nullable private BluetoothGattCharacteristic writeCharacteristic;
     @Nullable private BluetoothGattCharacteristic notifyCharacteristic;  // waveform PPG
     @Nullable private BluetoothGattCharacteristic statusCharacteristic;  // HR/SpO2/RR status
+    @Nullable private BluetoothGattCharacteristic streamCharacteristic;  // v3 TX/RX samples
+    @Nullable private BluetoothGattCharacteristic uiCharacteristic;      // v3 page state
 
     // ─── LiveData ─────────────────────────────────────────────────────
     private final MutableLiveData<ConnectionState> connectionState =
@@ -106,6 +137,15 @@ public class RpiBleManager extends BleManager {
 
     public RpiBleManager(@NonNull Context context) {
         super(context);
+    }
+
+    public void setRemoteListener(@Nullable RemoteListener listener) {
+        remoteListener = listener;
+    }
+
+    /** True once the Pi offered the v3 characteristics (an older Pi build has only v1/v2). */
+    public boolean hasRemotePages() {
+        return streamCharacteristic != null && uiCharacteristic != null;
     }
 
     // ─── Accessors ────────────────────────────────────────────────────
@@ -294,6 +334,8 @@ public class RpiBleManager extends BleManager {
             writeCharacteristic  = service.getCharacteristic(WRITE_UUID);
             notifyCharacteristic = service.getCharacteristic(NOTIFY_UUID);
             statusCharacteristic = service.getCharacteristic(STATUS_UUID);  // optional
+            streamCharacteristic = service.getCharacteristic(STREAM_UUID);  // v3, optional
+            uiCharacteristic     = service.getCharacteristic(UI_UUID);      // v3, optional
 
             boolean writeOk = writeCharacteristic != null
                     && (writeCharacteristic.getProperties()
@@ -317,7 +359,7 @@ public class RpiBleManager extends BleManager {
             lastStatusSeq = -1;   // fresh seq baseline per connection
 
             // MTU — tăng cho gói lệnh JSON
-            requestMtu(256)
+            requestMtu(REQUESTED_MTU)
                     .with((dev, mtu) -> Log.d(TAG, "MTU negotiated: " + mtu))
                     .enqueue();
 
@@ -351,6 +393,24 @@ public class RpiBleManager extends BleManager {
                         .enqueue();
             }
 
+            // ── v3: page stream and page state ──
+            if (streamCharacteristic != null) {
+                setNotificationCallback(streamCharacteristic)
+                        .with(RpiBleManager.this::handleStreamNotification);
+                enableNotifications(streamCharacteristic)
+                        .fail((dev, status) -> Log.w(TAG, "Stream notify failed: " + status))
+                        .enqueue();
+            }
+            if (uiCharacteristic != null) {
+                setNotificationCallback(uiCharacteristic)
+                        .with(RpiBleManager.this::handleUiNotification);
+                enableNotifications(uiCharacteristic)
+                        .fail((dev, status) -> Log.w(TAG, "UI notify failed: " + status))
+                        .enqueue();
+            } else {
+                Log.w(TAG, "Pi has no v3 page characteristics: only Monitor setpoints can be driven");
+            }
+
             connectionState.postValue(ConnectionState.CONNECTED);
             // Flush edits made while the connection was negotiating services.
             drainCommandQueue();
@@ -361,6 +421,8 @@ public class RpiBleManager extends BleManager {
             writeCharacteristic  = null;
             notifyCharacteristic = null;
             statusCharacteristic = null;
+            streamCharacteristic = null;
+            uiCharacteristic     = null;
             lastStatusSeq        = -1;
             synchronized (commandLock) {
                 commandWriteInFlight = false;
@@ -395,6 +457,28 @@ public class RpiBleManager extends BleManager {
             ppgSample.postValue(value);   // raw value, không clamp
         } catch (NumberFormatException e) {
             Log.v(TAG, "PPG packet lỗi (bỏ qua): \"" + str + "\"");
+        }
+    }
+
+    // ─── v3 handlers ─────────────────────────────────────────────────
+
+    private void handleStreamNotification(@NonNull BluetoothDevice device, @NonNull Data data) {
+        final byte[] raw = data.getValue();
+        final RemoteListener listener = remoteListener;
+        if (raw == null || raw.length == 0 || listener == null) return;
+        final String frame = new String(raw, StandardCharsets.US_ASCII);
+        mainHandler.post(() -> listener.onStreamFrame(frame));
+    }
+
+    private void handleUiNotification(@NonNull BluetoothDevice device, @NonNull Data data) {
+        final byte[] raw = data.getValue();
+        final RemoteListener listener = remoteListener;
+        if (raw == null || raw.length == 0 || listener == null) return;
+        try {
+            final JSONObject part = new JSONObject(new String(raw, StandardCharsets.UTF_8));
+            mainHandler.post(() -> listener.onUiPart(part));
+        } catch (Exception e) {
+            Log.w(TAG, "UI part ignored (" + raw.length + " bytes): " + e.getMessage());
         }
     }
 
@@ -581,7 +665,8 @@ public class RpiBleManager extends BleManager {
 
     @Override
     public void log(int priority, @NonNull String message) {
-        if (priority >= Log.DEBUG) {
+        // WARN and up: the library logs every notification at INFO, more than 100 lines a second here.
+        if (priority >= Log.WARN) {
             Log.println(priority, TAG, message);
         }
     }
