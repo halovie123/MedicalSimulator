@@ -52,6 +52,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -120,6 +121,12 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
 
     private final ActivityResultLauncher<ScanOptions> qrScanner =
             registerForActivityResult(new ScanContract(), r -> onQrScanned(r.getContents()));
+
+    /** A file the Pi sent (Model page Export CSV), waiting for the user to pick where it goes. */
+    private String pendingSaveText;
+    private Runnable pendingSaveDone;
+    private final ActivityResultLauncher<String> fileSaver =
+            registerForActivityResult(new ActivityResultContracts.CreateDocument("text/csv"), this::onSaveTarget);
 
     private final ActivityResultLauncher<String[]> caPicker =
             registerForActivityResult(new ActivityResultContracts.OpenDocument(), this::onCaPicked);
@@ -450,6 +457,29 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
     }
 
     /** The CA file picked in the broker form: read as PEM text (small files only). */
+    @Override
+    public void saveTextFile(@NonNull String suggestedName, @NonNull String text, @NonNull Runnable done) {
+        pendingSaveText = text;
+        pendingSaveDone = done;
+        fileSaver.launch(suggestedName);
+    }
+
+    private void onSaveTarget(Uri uri) {
+        String text = pendingSaveText;
+        Runnable done = pendingSaveDone;
+        pendingSaveText = null;
+        pendingSaveDone = null;
+        if (done != null) done.run();             // saved or cancelled: the Pi can stop offering the file
+        if (uri == null || text == null) return;
+        try (OutputStream out = getContentResolver().openOutputStream(uri)) {
+            if (out == null) throw new IllegalStateException("cannot open");
+            out.write(text.getBytes(StandardCharsets.UTF_8));
+            Toast.makeText(this, Texts.t("csv_saved"), Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "CSV: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void onCaPicked(Uri uri) {
         if (uri == null) return;
         try (InputStream in = getContentResolver().openInputStream(uri)) {

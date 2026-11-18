@@ -31,6 +31,8 @@ public abstract class Page {
         void sendThrottled(@NonNull String group, @NonNull JSONObject command);
         boolean connected();
         @NonNull Streams streams();
+        /** Ask the user where to save a text file (Android's document picker), write it, then run `done`. */
+        void saveTextFile(@NonNull String suggestedName, @NonNull String text, @NonNull Runnable done);
     }
 
     protected final Context c;

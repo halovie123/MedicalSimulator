@@ -22,16 +22,19 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Recordings page (Pi: ui/frames/playback_frame.py): the CSV recordings saved on the Pi, replayed on the Pi's
- * screen (not on the LEDs), with the recorded setpoints at the playback position and the live RX next to it.
- * Selecting is the v3 "rec" command; Play/Pause/Resume are the v2 "pb" commands.
+ * Recordings page (Pi: ui/frames/playback_frame.py): the CSV recordings saved on the Pi, played to the LEDs,
+ * with the recorded setpoints at the playback position and the live RX next to it. Selecting is the v3 "rec"
+ * command; Play/Pause/Resume are the v2 "pb" commands. Upload to DB ("rec": {"up": name}, asked twice) is the only
+ * way a recording reaches the database: the Pi keeps every file local until then.
  */
 public class RecordingsPage extends Page {
     private static final String[] METRIC_KEYS = {"hr", "spo2", "rr", "condition"};
     private static final int[] METRIC_INDEX = {0, 1, 2, 4};   // the Pi sends hr, spo2, rr, pi, condition
 
     private final TextView title, subtitle, sessionsTitle, txTitle, info, status;
-    private final Button playBtn;
+    private final Button playBtn, uploadBtn;
+    private boolean dbAvailable, uploadArmed;
+    private final Runnable disarmUpload = () -> { uploadArmed = false; paint(); };
     private final LinearLayout files;
     private final LaneView txView;
     private final TextView[] metricNames = new TextView[4], metricValues = new TextView[4];
@@ -47,6 +50,11 @@ public class RecordingsPage extends Page {
         title = titleText();
         subtitle = subtitleText();
         LinearLayout actions = Ui.row(c);
+        uploadBtn = Ui.outline(c, "", 11);
+        uploadBtn.setOnClickListener(v -> onUpload());
+        LinearLayout.LayoutParams up = Ui.lp(LinearLayout.LayoutParams.WRAP_CONTENT, Ui.dp(c, 32));
+        up.rightMargin = Ui.dp(c, 5);
+        actions.addView(uploadBtn, up);
         playBtn = Ui.primary(c, "");
         playBtn.setOnClickListener(v -> togglePlay());
         actions.addView(playBtn, Ui.lp(Ui.dp(c, 104), Ui.dp(c, 32)));
@@ -138,8 +146,47 @@ public class RecordingsPage extends Page {
         else host.send(obj("pb", "start", "pb_file", selected));
     }
 
+    /** First tap asks, the second (within 4 s) sends the consent for this one file. */
+    private void onUpload() {
+        if (selected.isEmpty()) return;
+        if (!uploadArmed) {
+            uploadArmed = true;
+            uploadBtn.postDelayed(disarmUpload, 4000);
+        } else {
+            uploadArmed = false;
+            uploadBtn.removeCallbacks(disarmUpload);
+            host.send(pageCommand("rec", "up", selected));
+        }
+        paint();
+    }
+
+    /** The database state of the selected file from the Pi's "sy" letters: s, p, e, l (local) or '-'. */
+    private char selectedSync() {
+        List<String> names = new ArrayList<>();
+        for (String[] chunk : chunks) if (chunk != null) names.addAll(Arrays.asList(chunk));
+        int i = names.indexOf(selected);
+        return i >= 0 && i < sync.length() ? sync.charAt(i) : '-';
+    }
+
+    private void paintUpload() {
+        char state = selectedSync();
+        String key;
+        boolean enabled = false;
+        int color = Ui.INK;
+        if (selected.isEmpty()) key = "upload";
+        else if (!dbAvailable) { key = "no_db"; color = Ui.MUTED; }
+        else if (state == 's') { key = "in_db"; color = Ui.OK; }
+        else if (state == 'p') { key = "uploading"; color = Ui.MUTED; }
+        else if (state == 'e') { key = "upload_failed"; color = Ui.ERROR; }
+        else { key = uploadArmed ? "upload_confirm" : "upload"; enabled = true; color = uploadArmed ? Ui.ACCENT : Ui.INK; }
+        uploadBtn.setText(Texts.t(key));
+        uploadBtn.setEnabled(enabled);
+        uploadBtn.setTextColor(color);
+    }
+
     private void paint() {
         txTitle.setText(selected.isEmpty() ? Texts.t("select") : selected);
+        paintUpload();
         boolean ended = duration > 0 && position >= duration;
         playBtn.setText((playing ? "\u2016  " : "\u25B6\uFE0E  ") + Texts.t(playing ? "pause" : ended ? "replay" : "play"));
         playBtn.setEnabled(!selected.isEmpty());
@@ -213,7 +260,11 @@ public class RecordingsPage extends Page {
             paint();
         } else if ("rec".equals(kind)) {
             String sel = part.optString("sel", "");
-            if (!sel.equals(selected)) host.streams().clearTx();
+            dbAvailable = part.optBoolean("db", false);
+            if (!sel.equals(selected)) {
+                host.streams().clearTx();
+                uploadArmed = false;
+            }
             selected = sel;
             playing = part.optBoolean("play");
             position = part.optDouble("pos", 0);

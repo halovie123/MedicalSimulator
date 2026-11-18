@@ -24,6 +24,8 @@ import org.json.JSONObject;
  * PPG morphology page (Pi: ui/frames/neural_frame.py): fitted Gaussian, LSM-GAN, PSF-GAN and APFT-GAN windows.
  * The models run on the Pi (its worker process); the phone only chooses the source and its settings, asks for a
  * new sequence, plays it on the LEDs and shows the Pi's preview (v3 "pv" parts) or the live output.
+ * Save to Recordings writes the window into the Pi's Recordings list; Export CSV has the Pi send the window's
+ * CSV as "nnx" parts, rebuilt here and saved where the user picks (Android's document picker).
  */
 public class NeuralPage extends Page {
     private static final String[] MODES = {"Gaussian (fitted)", "LSM-GAN", "PSF-GAN", "APFT-GAN"};
@@ -32,7 +34,8 @@ public class NeuralPage extends Page {
     private static final float SEEK_MAX = 22f;
 
     private final TextView title, info, sourceTitle, txTitle, seekLabel, status;
-    private final Button playBtn, generateBtn;
+    private final Button playBtn, generateBtn, saveRecBtn, exportBtn;
+    private final Transfer transfer = new Transfer();
     private final Choice mode, profile;
     private final ValueControl hr, lo, hi, dc, ac;
     private final SeekBar seek;
@@ -47,6 +50,14 @@ public class NeuralPage extends Page {
         title = titleText();
         info = subtitleText();
         LinearLayout actions = Ui.row(c);
+        saveRecBtn = Ui.outline(c, "", 11);
+        saveRecBtn.setOnClickListener(v -> host.send(pageCommand("nn", "save", true)));
+        LinearLayout.LayoutParams ap = Ui.lp(LinearLayout.LayoutParams.WRAP_CONTENT, Ui.dp(c, 32));
+        ap.rightMargin = Ui.dp(c, 5);
+        actions.addView(saveRecBtn, ap);
+        exportBtn = Ui.outline(c, "", 11);
+        exportBtn.setOnClickListener(v -> startExport());
+        actions.addView(exportBtn, ap);
         playBtn = Ui.primary(c, "");
         playBtn.setOnClickListener(v -> host.send(pageCommand("nn", "play", !playing)));
         actions.addView(playBtn, Ui.lp(Ui.dp(c, 128), Ui.dp(c, 32)));
@@ -155,6 +166,8 @@ public class NeuralPage extends Page {
         mode.setLabels(modeLabels());
         profile.setLabels(profileLabels());
         generateBtn.setText(Texts.t("generate"));
+        saveRecBtn.setText(Texts.t("save_rec"));
+        exportBtn.setText(Texts.t("export_csv"));
         hr.setTitle(Texts.t("nn_hr"));
         lo.setTitle(Texts.t("hr_min"));
         hi.setTitle(Texts.t("hr_max"));
@@ -179,6 +192,8 @@ public class NeuralPage extends Page {
         Ui.paintPrimary(playBtn, playing);
         playBtn.setEnabled(playing || canPlay);
         generateBtn.setEnabled(!busy);
+        saveRecBtn.setEnabled(canPlay);
+        exportBtn.setEnabled(canPlay && transfer.id == 0);
         boolean gan = !MODES[0].equals(modeName);
         profile.button.setEnabled(!gan);
         boolean hrOn = !busy && !"LSM-GAN".equals(modeName);
@@ -230,8 +245,72 @@ public class NeuralPage extends Page {
             case "pv":
                 preview.add(part);
                 break;
+            case "nnx":
+                onTransferPart(part);
+                break;
             default:
                 break;
+        }
+    }
+
+    private void startExport() {
+        transfer.start(1 + new java.util.Random().nextInt(Integer.MAX_VALUE - 1));
+        host.send(pageCommand("nn", "exp", transfer.id));
+        paint();
+    }
+
+    private void onTransferPart(@NonNull JSONObject part) {
+        if (!transfer.add(part)) return;
+        status.setText(String.format(java.util.Locale.US, Texts.t("receiving"), transfer.received, transfer.total));
+        status.setTextColor(Ui.MUTED);
+        if (!transfer.complete()) return;
+        final int id = transfer.id;
+        String name = transfer.name.isEmpty() ? "model.csv" : transfer.name;
+        String text = transfer.text();
+        transfer.start(0);
+        host.saveTextFile(name, text, () -> host.send(pageCommand("nn", "exp_ok", id)));
+        paint();
+    }
+
+    /** A CSV the Pi sends as "nnx" parts: {"id", "c" chunk, "m" chunks, "d" text, "n" file name on chunk 0}. */
+    private static final class Transfer {
+        int id, total, received;
+        String name = "";
+        String[] chunks = new String[0];
+
+        void start(int newId) {
+            id = newId;
+            total = received = 0;
+            name = "";
+            chunks = new String[0];
+        }
+
+        boolean add(JSONObject p) {
+            int c = p.optInt("c", -1), m = p.optInt("m", 0);
+            if (id == 0 || p.optInt("id") != id || m <= 0 || m > 100000 || c < 0 || c >= m) return false;
+            if (chunks.length != m) {
+                chunks = new String[m];
+                received = 0;
+            }
+            total = m;
+            if (chunks[c] == null) received++;
+            chunks[c] = p.optString("d", "");
+            if (c == 0) name = safeName(p.optString("n", ""));
+            return true;
+        }
+
+        boolean complete() { return total > 0 && received == total; }
+
+        String text() {
+            StringBuilder sb = new StringBuilder();
+            for (String chunk : chunks) sb.append(chunk);
+            return sb.toString();
+        }
+
+        /** The Pi's suggested name, kept to a plain file name. */
+        static String safeName(String n) {
+            String s = n.replaceAll("[^A-Za-z0-9._-]", "-");
+            return s.endsWith(".csv") && s.length() > 4 ? s : "";
         }
     }
 

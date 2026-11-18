@@ -113,8 +113,14 @@ public final class Texts {
         put("cal_idle", "Output stopped", "Chưa phát");
         // recordings
         put("rec_title", "Recordings", "Bản ghi");
-        put("rec_subtitle", "TX model commands recorded at 100 Hz. Playback is on screen only; it does not drive the LEDs.",
-                "Lệnh mô hình TX đã ghi ở 100 Hz. Phát lại chỉ trên màn hình, không điều khiển LED.");
+        put("rec_subtitle", "TX model commands recorded at 100 Hz. Playback sends those DAC commands to the LEDs, in place of Classic.",
+                "Lệnh mô hình TX đã ghi ở 100 Hz. Phát lại đưa đúng các lệnh DAC đó ra LED, thay cho Classic.");
+        put("upload", "Upload to DB", "Lên DB");
+        put("upload_confirm", "Upload it?", "Gửi lên DB?");
+        put("in_db", "In the DB", "Đã ở DB");
+        put("uploading", "Uploading…", "Đang gửi…");
+        put("upload_failed", "DB upload error", "Lỗi gửi DB");
+        put("no_db", "No database set up", "Chưa cấu hình DB");
         put("sessions", "Recorded sessions", "Phiên đã ghi");
         put("select", "Select a recording", "Chọn một bản ghi");
         put("empty", "No saved recordings. Start output, then Record CSV.", "Chưa có bản ghi. Hãy Phát rồi bấm Ghi CSV.");
@@ -145,6 +151,10 @@ public final class Texts {
         put("seek", "Position", "Vị trí");
         put("nn_tx", "TX output signal", "Tín hiệu phát TX");
         put("nn_rx", "RX received signal · OPT101", "Tín hiệu thu RX · OPT101");
+        put("save_rec", "Save to Recordings", "Lưu vào Recordings");
+        put("export_csv", "Export CSV", "Xuất CSV");
+        put("receiving", "Receiving CSV %d / %d…", "Đang nhận CSV %d / %d…");
+        put("csv_saved", "CSV saved", "Đã lưu CSV");
         put("model_on_pi", "Models run on the Pi; the phone only controls them.",
                 "Mô hình chạy trên Pi; điện thoại chỉ điều khiển.");
         // signal setup
