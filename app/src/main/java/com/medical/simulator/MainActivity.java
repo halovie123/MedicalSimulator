@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
     private static final long TICK_MS = 50;              // plot redraw, 20 fps
     private static final long THROTTLE_MS = 200;         // slider commands, at most 5 per second per group
     private static final long FOLLOW_PI_AFTER_MS = 2500; // the phone follows a page change made on the Pi
+    private static final long VIEW_RESEND_MS = 1500;     // re-ask the Pi for the phone's page when it missed it
 
     private static final int CA_MAX_BYTES = 64 * 1024;
 
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
     private Page current;
     private String piView = "";
     private long localNavAt;
+    private long viewSentAt;
     private SignalSetupDialog setup;
     private RpiBleManager.ConnectionState state = RpiBleManager.ConnectionState.DISCONNECTED;
     private String deviceName = "";
@@ -176,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
             piOnline = online != null && online;
             if (link == Link.MQTT && piOnline && !was && connected()) {
                 piView = "";
+                viewSentAt = SystemClock.elapsedRealtime();
                 send(obj("view", current.view()));   // the Pi came online: show it the phone's page
             }
             paintConnection();
@@ -319,6 +322,7 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
     private void showPage(Page page, boolean local) {
         if (local) {
             localNavAt = SystemClock.elapsedRealtime();
+            viewSentAt = localNavAt;
             if (connected()) send(obj("view", page.view()));
         }
         if (page == current) return;
@@ -534,6 +538,7 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
         if (state == RpiBleManager.ConnectionState.CONNECTED && before != state) {
             Pairing.setLastLink(this, link == Link.MQTT ? Pairing.LINK_MQTT : Pairing.LINK_BLE);
             piView = "";
+            viewSentAt = SystemClock.elapsedRealtime();
             if (connected()) send(obj("view", current.view()));   // the Pi shows the page the phone is on
         } else if (state == RpiBleManager.ConnectionState.DISCONNECTED) {
             streams.clearAll();
@@ -609,11 +614,20 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
             setup.refreshTexts();
             paintConnection();
         }
+        String before = piView;
         piView = part.optString("v", piView);
         Page piPage = pageFor(piView);
-        if (piPage != null && piPage != current
-                && SystemClock.elapsedRealtime() - localNavAt > FOLLOW_PI_AFTER_MS) {
-            showPage(piPage, false);      // someone changed the page on the Pi itself
+        if (piPage != null && piPage != current) {
+            long now = SystemClock.elapsedRealtime();
+            boolean piChanged = !before.isEmpty() && !piView.equals(before);
+            if (piChanged && now - localNavAt > FOLLOW_PI_AFTER_MS) {
+                showPage(piPage, false);  // someone changed the page on the Pi itself
+            } else if (!piChanged && connected() && now - viewSentAt > VIEW_RESEND_MS) {
+                // The Pi still shows its old page: it missed the phone's "view" (a broker link that dropped
+                // without notice loses it). Ask again instead of jumping back to the Pi's page.
+                viewSentAt = now;
+                send(obj("view", current.view()));
+            }
         }
         String hw = part.optString("hw", "");
         switch (hw) {
