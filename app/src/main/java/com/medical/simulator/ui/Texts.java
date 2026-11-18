@@ -59,6 +59,7 @@ public final class Texts {
         put("via_ble", "Bluetooth", "Bluetooth");
         put("via_mqtt", "Internet", "Internet");
         put("broker_host", "Broker host or IP", "Máy chủ broker (tên hoặc IP)");
+        put("broker_2", "Second broker host[:port] (optional)", "Broker thứ hai host[:port] (không bắt buộc)");
         put("port", "Port", "Cổng");
         put("tls", "TLS encryption (required over the internet)", "Mã hoá TLS (bắt buộc khi qua Internet)");
         put("device_id", "Pi device id", "Mã thiết bị Pi");

@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
  * The Pi's pairing QR (PPG_simulator_raspi comm/pairing.py) and what the phone remembers about the Pi:
  *
  *   ppgsim://pair?v=1&n=&lt;BLE name&gt;&a=&lt;BLE address&gt;&d=&lt;device&gt;&h=&lt;host&gt;&p=&lt;port&gt;&t=1&u=&lt;user&gt;&k=&lt;pass&gt;&f=&lt;CA sha256&gt;
+ *                    &h2=&lt;second broker&gt;&p2=&lt;its port&gt;   (optional; tried when the first cannot be reached)
  *
  * Every field is checked before anything is saved; a code with neither a Bluetooth address nor a complete
  * internet part is refused. The last link that connected ("ble" or "mqtt") is remembered so the app can
@@ -60,8 +61,17 @@ public final class Pairing {
             String pin = nz(u.getQueryParameter("f")).toLowerCase(java.util.Locale.US);
             if (!pin.isEmpty() && !HEX64.matcher(pin).matches()) throw new IllegalArgumentException("CA fingerprint");
             boolean tls = !"0".equals(u.getQueryParameter("t"));
+            String host2 = nz(u.getQueryParameter("h2"));
+            int port2 = 0;
+            if (!host2.isEmpty()) {
+                try {
+                    port2 = Integer.parseInt(nz(u.getQueryParameter("p2")));
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("second broker port");
+                }
+            }
             internet = new RemoteSettings(host, port, tls, device, nz(u.getQueryParameter("u")),
-                    nz(u.getQueryParameter("k")), "", pin);
+                    nz(u.getQueryParameter("k")), "", pin, host2, port2);
             String problem = internet.problem();
             if (problem != null) throw new IllegalArgumentException(problem);
         }

@@ -173,6 +173,12 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
             }
             paintConnection();
         });
+        mqtt.getServer().observe(this, host -> {
+            if (link == Link.MQTT && host != null && !host.isEmpty()) {
+                deviceName = mqtt.deviceId() + " · " + viaLabel(host);
+                paintConnection();
+            }
+        });
         mqtt.getErrorEvent().observe(this, msg -> {
             if (msg != null) Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
         });
@@ -358,6 +364,12 @@ public class MainActivity extends AppCompatActivity implements Page.Host, MqttLi
                 })
                 .setNegativeButton(Texts.t("cancel"), null)
                 .show();
+    }
+
+    /** "Tailscale" for the Pi's own broker over the tailnet, else the broker's host. */
+    private static String viaLabel(@NonNull String host) {
+        if (host.endsWith(".ts.net") || host.matches("^100\\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])\\..*")) return "Tailscale";
+        return host;
     }
 
     private void connectRemote(@NonNull RemoteSettings settings) {

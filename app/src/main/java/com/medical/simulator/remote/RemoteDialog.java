@@ -77,6 +77,9 @@ public class RemoteDialog {
         EditText user = field(form, Texts.t("username"), current.username, InputType.TYPE_CLASS_TEXT);
         EditText pass = field(form, Texts.t("password"), current.password,
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        EditText second = field(form, Texts.t("broker_2"),
+                current.host2.isEmpty() ? "" : current.host2 + ":" + current.port2,
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
         LinearLayout caRow = Ui.row(c);
         caState = Ui.line(c, "", 11, false, Ui.MUTED);
         caRow.addView(caState, Ui.lp(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
@@ -108,8 +111,20 @@ public class RemoteDialog {
             } catch (NumberFormatException e) {
                 portValue = -1;
             }
+            String host2 = second.getText().toString().trim();
+            int port2 = portValue;                       // "host" alone: same port as the first broker
+            int colon = host2.lastIndexOf(':');
+            if (colon > 0) {
+                try {
+                    port2 = Integer.parseInt(host2.substring(colon + 1));
+                } catch (NumberFormatException e) {
+                    port2 = -1;
+                }
+                host2 = host2.substring(0, colon);
+            }
             RemoteSettings s = new RemoteSettings(host.getText().toString(), portValue, tls.isChecked(),
-                    device.getText().toString(), user.getText().toString(), pass.getText().toString(), caPem, caPin);
+                    device.getText().toString(), user.getText().toString(), pass.getText().toString(), caPem, caPin,
+                    host2, port2);
             String problem = s.problem();
             if (problem != null) {
                 Toast.makeText(c, problem, Toast.LENGTH_SHORT).show();

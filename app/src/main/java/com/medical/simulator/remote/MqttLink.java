@@ -44,8 +44,10 @@ import javax.net.ssl.X509TrustManager;
  * cmd (out, QoS 1), client (out, presence ping), status (in, retained), online (in, retained "1"/"0"),
  * stream and ui (in, QoS 0).
  *
- * The broker certificate is checked against the system CAs, or only against the CA the user imported
- * (a private trial CA). Callbacks arrive on Paho's thread and are handed to the main thread.
+ * The broker certificate is accepted when the system CAs vouch for it, or the private CA paired by QR (pin) or
+ * imported from a file does; Paho checks the host name either way. With a second broker the URIs are tried in
+ * order on every (re)connect (Paho serverURIs), e.g. the Pi's own broker over Tailscale, then a cloud broker.
+ * Callbacks arrive on Paho's thread and are handed to the main thread.
  */
 public class MqttLink {
     private static final String TAG = "MqttLink";
@@ -61,6 +63,7 @@ public class MqttLink {
     private final MutableLiveData<ConnectionState> state = new MutableLiveData<>(ConnectionState.DISCONNECTED);
     private final MutableLiveData<Boolean> piOnline = new MutableLiveData<>(false);
     private final MutableLiveData<String> error = new MutableLiveData<>();
+    private final MutableLiveData<String> server = new MutableLiveData<>("");
     @Nullable private volatile Listener listener;
     @Nullable private MqttAsyncClient client;
     private RemoteSettings settings;
@@ -79,6 +82,8 @@ public class MqttLink {
     /** The Pi's retained "online" flag: false while the broker is reachable but the Pi is not. */
     public LiveData<Boolean> getPiOnline() { return piOnline; }
     public LiveData<String> getErrorEvent() { return error; }
+    /** Host of the broker in use ("" while not connected). */
+    public LiveData<String> getServer() { return server; }
     public String deviceId() { return settings == null ? "" : settings.deviceId; }
 
     public boolean isConnected() {
@@ -93,7 +98,8 @@ public class MqttLink {
         wanted = true;
         state.setValue(ConnectionState.CONNECTING);
         try {
-            String uri = (s.tls ? "ssl://" : "tcp://") + s.host + ":" + s.port;
+            String[] uris = s.serverUris();
+            String uri = uris[0];
             MqttAsyncClient c = new MqttAsyncClient(uri, "ppgsim-app-" + UUID.randomUUID().toString().substring(0, 8),
                     new MemoryPersistence());
             MqttConnectOptions o = new MqttConnectOptions();
@@ -101,10 +107,11 @@ public class MqttLink {
             o.setAutomaticReconnect(true);
             o.setKeepAliveInterval(KEEPALIVE_S);
             o.setConnectionTimeout(TIMEOUT_S);
+            if (uris.length > 1) o.setServerURIs(uris);
             if (!s.username.isEmpty()) o.setUserName(s.username);
             if (!s.password.isEmpty()) o.setPassword(s.password.toCharArray());
-            if (s.tls && !s.caPin.isEmpty()) o.setSocketFactory(pinnedSocketFactory(s.caPin));
-            else if (s.tls && !s.caPem.isEmpty()) o.setSocketFactory(socketFactoryFor(s.caPem));
+            if (s.tls && (!s.caPin.isEmpty() || !s.caPem.isEmpty()))
+                o.setSocketFactory(systemOrPrivateCa(s.caPin, s.caPem));
             c.setCallback(callback);
             client = c;
             c.connect(o, null, new IMqttActionListener() {
@@ -136,6 +143,7 @@ public class MqttLink {
             }
         }
         piOnline.postValue(false);
+        server.postValue("");
         state.postValue(ConnectionState.DISCONNECTED);
     }
 
@@ -170,6 +178,7 @@ public class MqttLink {
                 fail("MQTT subscribe: " + reason(e));
                 return;
             }
+            server.postValue(hostOf(serverURI));
             state.postValue(ConnectionState.CONNECTED);
             main.removeCallbacks(ping);
             main.post(ping);
@@ -177,6 +186,7 @@ public class MqttLink {
 
         @Override public void connectionLost(Throwable cause) {
             main.removeCallbacks(ping);
+            server.postValue("");
             if (wanted) state.postValue(ConnectionState.CONNECTING);   // Paho reconnects on its own
         }
 
@@ -230,14 +240,58 @@ public class MqttLink {
         return m != null ? m : cause.getClass().getSimpleName();
     }
 
+    private static String hostOf(String uri) {
+        if (uri == null) return "";
+        int start = uri.indexOf("://");
+        String rest = start < 0 ? uri : uri.substring(start + 3);
+        int colon = rest.lastIndexOf(':');
+        return colon > 0 ? rest.substring(0, colon) : rest;
+    }
+
+    /**
+     * TLS accepted when the system CAs validate the broker, or else the private CA does (pinned by SHA-256 from
+     * the pairing QR, or an imported PEM). With two brokers one is usually public (system CAs) and the other the
+     * Pi's own (private CA).
+     */
+    private static SSLSocketFactory systemOrPrivateCa(String pinHex, String pem) throws Exception {
+        TrustManagerFactory sys = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        sys.init((KeyStore) null);
+        X509TrustManager system = firstX509(sys.getTrustManagers());
+        X509TrustManager privateCa = !pinHex.isEmpty() ? pinnedTrustManager(pinHex) : importedTrustManager(pem);
+        X509TrustManager either = new X509TrustManager() {
+            @Override public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                throw new CertificateException("client certificates are not used");
+            }
+
+            @Override public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                try {
+                    system.checkServerTrusted(chain, authType);
+                } catch (CertificateException publicFailure) {
+                    privateCa.checkServerTrusted(chain, authType);
+                }
+            }
+
+            @Override public X509Certificate[] getAcceptedIssuers() { return system.getAcceptedIssuers(); }
+        };
+        SSLContext ctx = SSLContext.getInstance("TLS");
+        ctx.init(null, new TrustManager[]{either}, null);
+        return ctx.getSocketFactory();
+    }
+
+    private static X509TrustManager firstX509(TrustManager[] managers) {
+        for (TrustManager tm : managers) {
+            if (tm instanceof X509TrustManager) return (X509TrustManager) tm;
+        }
+        throw new IllegalStateException("no X509 trust manager");
+    }
+
     /**
      * TLS for a CA known only by its SHA-256 (from the pairing QR): the broker sends its chain, the CA in it
      * whose DER hash matches becomes the only trust anchor, and the chain is then validated against it as usual
      * (signature, dates). Paho still checks the host name.
      */
-    private static SSLSocketFactory pinnedSocketFactory(String pinHex) throws Exception {
-        TrustManagerFactory system = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        X509TrustManager pinned = new X509TrustManager() {
+    private static X509TrustManager pinnedTrustManager(String pinHex) {
+        return new X509TrustManager() {
             @Override public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
                 throw new CertificateException("client certificates are not used");
             }
@@ -270,9 +324,6 @@ public class MqttLink {
 
             @Override public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
         };
-        SSLContext ctx = SSLContext.getInstance("TLS");
-        ctx.init(null, new TrustManager[]{pinned}, null);
-        return ctx.getSocketFactory();
     }
 
     private static String sha256Hex(byte[] data) throws CertificateException {
@@ -286,8 +337,8 @@ public class MqttLink {
         }
     }
 
-    /** TLS that trusts only the given CA (PEM): the trial broker's private CA. */
-    private static SSLSocketFactory socketFactoryFor(String pem) throws Exception {
+    /** Trust in only the given CA (PEM): a private broker CA imported from a file. */
+    private static X509TrustManager importedTrustManager(String pem) throws Exception {
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         X509Certificate ca = (X509Certificate) cf.generateCertificate(
                 new ByteArrayInputStream(pem.getBytes(StandardCharsets.US_ASCII)));
@@ -296,8 +347,6 @@ public class MqttLink {
         ks.setCertificateEntry("broker-ca", ca);
         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         tmf.init(ks);
-        SSLContext ctx = SSLContext.getInstance("TLS");
-        ctx.init(null, tmf.getTrustManagers(), null);
-        return ctx.getSocketFactory();
+        return firstX509(tmf.getTrustManagers());
     }
 }
