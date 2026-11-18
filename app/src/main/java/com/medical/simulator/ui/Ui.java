@@ -53,6 +53,14 @@ public final class Ui {
     public static final int WARN_INK = Color.parseColor("#F0C46A");
     public static final int WHITE = Color.WHITE;
 
+    // Control sizes (dp / sp), one set for every page so buttons and sliders stay compact and the plots get the room
+    /** Page action buttons (Start output, Play LED, Export CSV ...). */
+    public static final int ACTION_H = 28;
+    public static final float ACTION_TEXT = 10.5f;
+    /** Buttons and menus in a card header (Normal ▾, 3-Gaussian, Beep). */
+    public static final int TOOL_H = 24;
+    public static final float TOOL_TEXT = 10f;
+
     /** A state name the Pi sends ("ok", "error", "warn", "accent", "muted") as a text colour. */
     public static int kindColor(String kind) {
         if (kind == null) return MUTED;
@@ -131,14 +139,14 @@ public final class Ui {
         b.setSingleLine(true);
         b.setEllipsize(TextUtils.TruncateAt.END);
         b.setGravity(Gravity.CENTER);
-        int h = dp(c, 10);
+        int h = dp(c, 9);
         b.setPadding(h, 0, h, 0);
         return b;
     }
 
     /** Filled accent button (the Pi's primary action: Start output, Play LED, Start). */
     public static Button primary(@NonNull Context c, CharSequence label) {
-        Button b = baseButton(c, label, 12);
+        Button b = baseButton(c, label, ACTION_TEXT);
         paintPrimary(b, false);
         return b;
     }
@@ -147,9 +155,13 @@ public final class Ui {
     public static void paintPrimary(@NonNull Button b, boolean running) {
         Context c = b.getContext();
         int fill = running ? ERROR : ACCENT;
-        b.setBackground(new RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), round(c, fill, 0, 6), null));
+        // Disabled: a neutral tile with muted text (faint text on the teal fill could not be read).
+        android.graphics.drawable.StateListDrawable states = new android.graphics.drawable.StateListDrawable();
+        states.addState(new int[]{-android.R.attr.state_enabled}, round(c, SUBTLE, BORDER, 6));
+        states.addState(new int[]{}, round(c, fill, 0, 6));
+        b.setBackground(new RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), states, null));
         b.setTextColor(new ColorStateList(new int[][]{{-android.R.attr.state_enabled}, {}},
-                new int[]{FAINT, WHITE}));
+                new int[]{MUTED, WHITE}));
     }
 
     /** Outlined neutral button (Record CSV, 3-Gaussian, New sequence, −/+). */

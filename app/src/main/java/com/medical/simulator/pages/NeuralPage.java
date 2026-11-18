@@ -50,30 +50,30 @@ public class NeuralPage extends Page {
         title = titleText();
         info = subtitleText();
         LinearLayout actions = Ui.row(c);
-        saveRecBtn = Ui.outline(c, "", 11);
+        saveRecBtn = Ui.outline(c, "", Ui.ACTION_TEXT);
         saveRecBtn.setOnClickListener(v -> host.send(pageCommand("nn", "save", true)));
-        LinearLayout.LayoutParams ap = Ui.lp(LinearLayout.LayoutParams.WRAP_CONTENT, Ui.dp(c, 32));
+        LinearLayout.LayoutParams ap = Ui.lp(LinearLayout.LayoutParams.WRAP_CONTENT, Ui.dp(c, Ui.ACTION_H));
         ap.rightMargin = Ui.dp(c, 5);
         actions.addView(saveRecBtn, ap);
-        exportBtn = Ui.outline(c, "", 11);
+        exportBtn = Ui.outline(c, "", Ui.ACTION_TEXT);
         exportBtn.setOnClickListener(v -> startExport());
         actions.addView(exportBtn, ap);
         playBtn = Ui.primary(c, "");
         playBtn.setOnClickListener(v -> host.send(pageCommand("nn", "play", !playing)));
-        actions.addView(playBtn, Ui.lp(Ui.dp(c, 128), Ui.dp(c, 32)));
+        actions.addView(playBtn, Ui.lp(Ui.dp(c, 112), Ui.dp(c, Ui.ACTION_H)));
         pageHeader(title, info, actions);
 
         // ── waveform source ──
         LinearLayout tools = Ui.row(c);
         mode = new Choice(c, modeLabels(), i -> host.send(pageCommand("nn", "mode", MODES[i])));
-        tools.addView(mode.button, Ui.lp(Ui.dp(c, 150), Ui.dp(c, 28)));
+        tools.addView(mode.button, Ui.lp(Ui.dp(c, 132), Ui.dp(c, Ui.TOOL_H)));
         profile = new Choice(c, profileLabels(), i -> host.send(pageCommand("nn", "prof", PROFILES[i])));
-        LinearLayout.LayoutParams pp = Ui.lp(Ui.dp(c, 124), Ui.dp(c, 28));
+        LinearLayout.LayoutParams pp = Ui.lp(Ui.dp(c, 110), Ui.dp(c, Ui.TOOL_H));
         pp.leftMargin = Ui.dp(c, 5);
         tools.addView(profile.button, pp);
-        generateBtn = Ui.outline(c, "", 11);
+        generateBtn = Ui.outline(c, "", Ui.TOOL_TEXT);
         generateBtn.setOnClickListener(v -> host.send(pageCommand("nn", "gen", true)));
-        LinearLayout.LayoutParams gp = Ui.lp(Ui.dp(c, 104), Ui.dp(c, 28));
+        LinearLayout.LayoutParams gp = Ui.lp(Ui.dp(c, 94), Ui.dp(c, Ui.TOOL_H));
         gp.leftMargin = Ui.dp(c, 5);
         tools.addView(generateBtn, gp);
         sourceTitle = cardTitle();
@@ -98,7 +98,7 @@ public class NeuralPage extends Page {
         }
         source.addView(row);
         LinearLayout.LayoutParams sl = Ui.lp(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        sl.bottomMargin = Ui.dp(c, 5);
+        sl.bottomMargin = Ui.dp(c, 4);
         root.addView(source, sl);
 
         // ── TX (preview or live) and RX ──
@@ -122,7 +122,7 @@ public class NeuralPage extends Page {
                 host.send(pageCommand("nn", "seek", s.getProgress() / 10.0));
             }
         });
-        txTools.addView(seek, Ui.lp(Ui.dp(c, 110), Ui.dp(c, 28)));
+        txTools.addView(seek, Ui.lp(Ui.dp(c, 110), Ui.dp(c, Ui.TOOL_H)));
         txTitle = cardTitle();
         LinearLayout tx = section(txTitle, txTools);
         txView = new LaneView(c);

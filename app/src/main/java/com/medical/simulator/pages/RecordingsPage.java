@@ -50,14 +50,14 @@ public class RecordingsPage extends Page {
         title = titleText();
         subtitle = subtitleText();
         LinearLayout actions = Ui.row(c);
-        uploadBtn = Ui.outline(c, "", 11);
+        uploadBtn = Ui.outline(c, "", Ui.ACTION_TEXT);
         uploadBtn.setOnClickListener(v -> onUpload());
-        LinearLayout.LayoutParams up = Ui.lp(LinearLayout.LayoutParams.WRAP_CONTENT, Ui.dp(c, 32));
+        LinearLayout.LayoutParams up = Ui.lp(LinearLayout.LayoutParams.WRAP_CONTENT, Ui.dp(c, Ui.ACTION_H));
         up.rightMargin = Ui.dp(c, 5);
         actions.addView(uploadBtn, up);
         playBtn = Ui.primary(c, "");
         playBtn.setOnClickListener(v -> togglePlay());
-        actions.addView(playBtn, Ui.lp(Ui.dp(c, 104), Ui.dp(c, 32)));
+        actions.addView(playBtn, Ui.lp(Ui.dp(c, 94), Ui.dp(c, Ui.ACTION_H)));
         pageHeader(title, subtitle, actions);
 
         LinearLayout body = Ui.row(c);
@@ -106,9 +106,9 @@ public class RecordingsPage extends Page {
         for (int i = 0; i < 4; i++) {
             LinearLayout card = Ui.card(c, LinearLayout.VERTICAL);
             int p = Ui.dp(c, 7);
-            card.setPadding(p, Ui.dp(c, 4), p, Ui.dp(c, 4));
-            metricNames[i] = Ui.line(c, "", 10, false, Ui.MUTED);
-            metricValues[i] = Ui.line(c, "—", 15, true, Ui.INK);
+            card.setPadding(p, Ui.dp(c, 3), p, Ui.dp(c, 3));
+            metricNames[i] = Ui.line(c, "", 9.5f, false, Ui.MUTED);
+            metricValues[i] = Ui.line(c, "—", 13.5f, true, Ui.INK);
             card.addView(metricNames[i]);
             card.addView(metricValues[i]);
             LinearLayout.LayoutParams mp = Ui.lp(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
@@ -117,7 +117,7 @@ public class RecordingsPage extends Page {
             metrics.addView(card, mp);
         }
         LinearLayout.LayoutParams ml = Ui.lp(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        ml.topMargin = Ui.dp(c, 6);
+        ml.topMargin = Ui.dp(c, 5);
         right.addView(metrics, ml);
         body.addView(right, Ui.lp(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f));
         root.addView(body, Ui.lp(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
@@ -206,7 +206,7 @@ public class RecordingsPage extends Page {
         }
         for (int i = 0; i < names.size(); i++) {
             final String name = names.get(i);
-            Button b = Ui.outline(c, "☰  " + name + syncMark(i), 11);
+            Button b = Ui.outline(c, "☰  " + name + syncMark(i), Ui.TOOL_TEXT);
             b.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
             b.setTag(name);
             b.setOnClickListener(v -> {
@@ -215,7 +215,7 @@ public class RecordingsPage extends Page {
                 host.send(pageCommand("rec", "sel", name));
                 paint();
             });
-            LinearLayout.LayoutParams lp = Ui.lp(LinearLayout.LayoutParams.MATCH_PARENT, Ui.dp(c, 32));
+            LinearLayout.LayoutParams lp = Ui.lp(LinearLayout.LayoutParams.MATCH_PARENT, Ui.dp(c, 26));
             lp.bottomMargin = Ui.dp(c, 2);
             files.addView(b, lp);
         }

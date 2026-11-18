@@ -33,9 +33,9 @@ public class SignalSetupDialog extends Dialog {
         LinearLayout head = Ui.row(c);
         title = Ui.line(c, "", 15, true, Ui.INK);
         head.addView(title, Ui.lp(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-        close = Ui.outline(c, "", 12);
+        close = Ui.outline(c, "", Ui.ACTION_TEXT);
         close.setOnClickListener(v -> dismiss());
-        head.addView(close, Ui.lp(Ui.dp(c, 90), Ui.dp(c, 30)));
+        head.addView(close, Ui.lp(Ui.dp(c, 84), Ui.dp(c, Ui.ACTION_H)));
         root.addView(head);
         note = Ui.text(c, "", 10, false, Ui.MUTED);
         note.setPadding(0, Ui.dp(c, 2), 0, Ui.dp(c, 6));
@@ -54,7 +54,9 @@ public class SignalSetupDialog extends Dialog {
                 LinearLayout.LayoutParams lp = Ui.lp(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
                 lp.setMargins(Ui.dp(c, 4), Ui.dp(c, 3), Ui.dp(c, 4), Ui.dp(c, 3));
                 if (control == null) {
-                    row.addView(Ui.space(c), lp);
+                    // An empty View measured with WRAP_CONTENT takes all the height it is offered; give it none.
+                    lp.height = 0;
+                    row.addView(new android.view.View(c), lp);
                     continue;
                 }
                 final String key = keys[r][k];

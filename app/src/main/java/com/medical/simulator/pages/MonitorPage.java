@@ -41,19 +41,19 @@ public class MonitorPage extends Page {
         dot = new View(c);
         dot.setBackground(Ui.round(c, Ui.FAINT, 0, 4));
         bar.addView(dot, Ui.lp(Ui.dp(c, 8), Ui.dp(c, 8)));
-        statusTitle = Ui.line(c, "", 12, true, Ui.INK);
+        statusTitle = Ui.line(c, "", 11.5f, true, Ui.INK);
         statusTitle.setPadding(Ui.dp(c, 7), 0, Ui.dp(c, 5), 0);
         bar.addView(statusTitle);
-        statusDetail = Ui.line(c, "", 11, false, Ui.MUTED);
+        statusDetail = Ui.line(c, "", 10.5f, false, Ui.MUTED);
         bar.addView(statusDetail, Ui.lp(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-        recordBtn = Ui.outline(c, "", 11.5f);
+        recordBtn = Ui.outline(c, "", Ui.ACTION_TEXT);
         recordBtn.setOnClickListener(v -> host.send(obj("record", !recording)));
-        LinearLayout.LayoutParams rp = Ui.lp(Ui.dp(c, 104), Ui.dp(c, 32));
+        LinearLayout.LayoutParams rp = Ui.lp(Ui.dp(c, 94), Ui.dp(c, Ui.ACTION_H));
         rp.rightMargin = Ui.dp(c, 6);
         bar.addView(recordBtn, rp);
         runBtn = Ui.primary(c, "");
         runBtn.setOnClickListener(v -> host.send(obj("run", !running)));
-        bar.addView(runBtn, Ui.lp(Ui.dp(c, 116), Ui.dp(c, 32)));
+        bar.addView(runBtn, Ui.lp(Ui.dp(c, 104), Ui.dp(c, Ui.ACTION_H)));
         LinearLayout.LayoutParams bp = Ui.lp(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         bp.bottomMargin = Ui.dp(c, 5);
         root.addView(bar, bp);
@@ -63,10 +63,10 @@ public class MonitorPage extends Page {
         panels.setGravity(0);
         LinearLayout txTools = Ui.row(c);
         condition = new Choice(c, Texts.conditions(), i -> host.send(obj("condition", i)));
-        txTools.addView(condition.button, Ui.lp(Ui.dp(c, 118), Ui.dp(c, 28)));
-        gaussBtn = Ui.outline(c, Texts.t("gauss"), 11);
+        txTools.addView(condition.button, Ui.lp(Ui.dp(c, 104), Ui.dp(c, Ui.TOOL_H)));
+        gaussBtn = Ui.outline(c, Texts.t("gauss"), Ui.TOOL_TEXT);
         gaussBtn.setOnClickListener(v -> host.send(obj("gauss", true)));
-        LinearLayout.LayoutParams gp = Ui.lp(LinearLayout.LayoutParams.WRAP_CONTENT, Ui.dp(c, 28));
+        LinearLayout.LayoutParams gp = Ui.lp(LinearLayout.LayoutParams.WRAP_CONTENT, Ui.dp(c, Ui.TOOL_H));
         gp.leftMargin = Ui.dp(c, 5);
         txTools.addView(gaussBtn, gp);
         txTitle = cardTitle();
@@ -86,9 +86,9 @@ public class MonitorPage extends Page {
         panels.addView(tx, lp);
 
         LinearLayout rxTools = Ui.row(c);
-        beepBtn = Ui.outline(c, "", 11);
+        beepBtn = Ui.outline(c, "", Ui.TOOL_TEXT);
         beepBtn.setOnClickListener(v -> host.send(obj("beep", !beep)));
-        rxTools.addView(beepBtn, Ui.lp(Ui.dp(c, 104), Ui.dp(c, 28)));
+        rxTools.addView(beepBtn, Ui.lp(Ui.dp(c, 88), Ui.dp(c, Ui.TOOL_H)));
         LinearLayout rx = rxCard(rxTools);
         LinearLayout.LayoutParams lp2 = Ui.lp(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f);
         lp2.leftMargin = Ui.dp(c, 3);
@@ -118,7 +118,7 @@ public class MonitorPage extends Page {
             setpoints.addView(cards[i], cp);
         }
         LinearLayout.LayoutParams sp = Ui.lp(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        sp.topMargin = Ui.dp(c, 6);
+        sp.topMargin = Ui.dp(c, 5);
         root.addView(setpoints, sp);
         refreshTexts();
     }

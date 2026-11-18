@@ -3,7 +3,6 @@ package com.medical.simulator.ui;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.SystemClock;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -13,9 +12,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 /**
- * A number with − and + buttons and a slider, in the two shapes the Pi app uses (ui/setpoint_card.py and
- * ui/touch_slider.py): a CARD (title and range, big value, slider underneath; the Monitor setpoints) and an
- * INLINE control (label, then − value [slider] +; Calibration and Neural pages).
+ * A number with − and + buttons and a slider, in two shapes (after the Pi app's ui/setpoint_card.py and
+ * ui/touch_slider.py): a CARD (title, range and value, then − slider +; the Monitor setpoints) and an INLINE
+ * control (label and value, then − slider +; Calibration and Neural pages).
  *
  * The listener gets every user change: done=false while the slider is dragged, done=true on release and on
  * −/+. A remote value (from the Pi) is applied with {@link #setRemote} and ignored while the user is touching
@@ -56,60 +55,55 @@ public class ValueControl extends LinearLayout {
         this.step = step;
         this.decimals = decimals;
         setOrientation(VERTICAL);
-        int pad = Ui.dp(c, card ? 8 : 0);
-        setPadding(pad, Ui.dp(c, card ? 6 : 0), pad, Ui.dp(c, card ? 2 : 0));
-        if (card) setBackground(Ui.round(c, Ui.PANEL, Ui.LINE, 8));
+        // Two compact rows: title (and range) with the value on the right, then − slider +. The slider gets the
+        // width between the buttons, and the card takes about half the height of the old three-row layout.
+        // An inline control sits on a recessed tile, so in a row of five each value reads with its own label.
+        int pad = Ui.dp(c, card ? 7 : 6);
+        setPadding(pad, Ui.dp(c, card ? 5 : 4), pad, Ui.dp(c, 4));
+        setBackground(card ? Ui.round(c, Ui.PANEL, Ui.LINE, 8) : Ui.round(c, Ui.SUBTLE, 0, 6));
 
         LinearLayout head = Ui.row(c);
-        titleView = Ui.line(c, title, card ? 12 : 10, card, card ? Ui.INK : Ui.MUTED);
-        head.addView(titleView, Ui.lp(0, LayoutParams.WRAP_CONTENT, 1f));
-        rangeView = Ui.line(c, Ui.num(min) + "–" + Ui.num(max), 9.5f, false, Ui.FAINT);
+        titleView = Ui.line(c, title, card ? 11 : 9.5f, card, card ? Ui.INK : Ui.MUTED);
+        rangeView = Ui.line(c, Ui.num(min) + "–" + Ui.num(max), 8.5f, false, Ui.FAINT);
         int bp = Ui.dp(c, 4);
         rangeView.setPadding(bp, Ui.dp(c, 1), bp, Ui.dp(c, 1));
-        if (card) head.addView(rangeView);
+        LinearLayout names = Ui.row(c);
+        names.addView(titleView, Ui.lp(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f));
+        if (card) {
+            LayoutParams rp = Ui.lp(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            rp.leftMargin = Ui.dp(c, 3);
+            names.addView(rangeView, rp);
+        }
+        head.addView(names, Ui.lp(0, LayoutParams.WRAP_CONTENT, 1f));
+        valueView = Ui.line(c, "", card ? 17 : 11.5f, true, Ui.INK);
+        LayoutParams vp = Ui.lp(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        vp.leftMargin = Ui.dp(c, 6);
+        head.addView(valueView, vp);
+        if (card && !unit.isEmpty()) {
+            TextView unitView = Ui.line(c, unit, 9, false, Ui.MUTED);
+            unitView.setPadding(Ui.dp(c, 3), Ui.dp(c, 3), 0, 0);
+            head.addView(unitView);
+        }
         addView(head);
 
-        minus = Ui.outline(c, "−", card ? 17 : 15);
-        plus = Ui.outline(c, "+", card ? 17 : 15);
+        minus = Ui.outline(c, "−", card ? 14 : 13);
+        plus = Ui.outline(c, "+", card ? 14 : 13);
         minus.setPadding(0, 0, 0, 0);
         plus.setPadding(0, 0, 0, 0);
-        valueView = Ui.line(c, "", card ? 22 : 13, true, Ui.INK);
         bar = new SeekBar(c);
         bar.setMax((int) Math.round((max - min) / step));
         bar.setProgressTintList(ColorStateList.valueOf(Ui.ACCENT));
         bar.setThumbTintList(ColorStateList.valueOf(Ui.INK));
         bar.setProgressBackgroundTintList(ColorStateList.valueOf(Ui.LINE));
-        bar.setPadding(Ui.dp(c, 10), 0, Ui.dp(c, 10), 0);
-        int b = Ui.dp(c, card ? 32 : 26);
-
-        if (card) {
-            LinearLayout row = Ui.row(c);
-            row.addView(minus, Ui.lp(b, b));
-            LinearLayout readout = Ui.row(c);
-            readout.setGravity(Gravity.CENTER);
-            readout.addView(valueView);
-            TextView unitView = Ui.line(c, unit, 10, false, Ui.MUTED);
-            unitView.setPadding(Ui.dp(c, 4), Ui.dp(c, 6), 0, 0);
-            readout.addView(unitView);
-            row.addView(readout, Ui.lp(0, LayoutParams.WRAP_CONTENT, 1f));
-            row.addView(plus, Ui.lp(b, b));
-            LayoutParams rp = Ui.lp(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-            rp.topMargin = Ui.dp(c, 3);
-            addView(row, rp);
-            addView(bar, Ui.lp(LayoutParams.MATCH_PARENT, Ui.dp(c, 26)));
-        } else {
-            // − value + over a full-width slider: one row was too narrow for a usable slider on a phone.
-            LinearLayout row = Ui.row(c);
-            row.addView(minus, Ui.lp(b, b));
-            valueView.setGravity(Gravity.CENTER);
-            row.addView(valueView, Ui.lp(0, LayoutParams.WRAP_CONTENT, 1f));
-            row.addView(plus, Ui.lp(b, b));
-            LayoutParams rp = Ui.lp(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-            rp.topMargin = Ui.dp(c, 2);
-            addView(row, rp);
-            bar.setPadding(Ui.dp(c, 8), 0, Ui.dp(c, 8), 0);
-            addView(bar, Ui.lp(LayoutParams.MATCH_PARENT, Ui.dp(c, 22)));
-        }
+        bar.setPadding(Ui.dp(c, 9), 0, Ui.dp(c, 9), 0);
+        int b = Ui.dp(c, card ? 24 : 22);
+        LinearLayout row = Ui.row(c);
+        row.addView(minus, Ui.lp(b, b));
+        row.addView(bar, Ui.lp(0, b, 1f));
+        row.addView(plus, Ui.lp(b, b));
+        LayoutParams rowParams = Ui.lp(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        rowParams.topMargin = Ui.dp(c, card ? 4 : 3);
+        addView(row, rowParams);
 
         minus.setOnClickListener(v -> nudge(-1));
         plus.setOnClickListener(v -> nudge(1));

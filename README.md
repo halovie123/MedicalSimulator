@@ -1,26 +1,30 @@
 # Medical PPG Simulator — Android App
 
-Ứng dụng Android toàn màn hình dùng để điều khiển và theo dõi **bộ mô phỏng tín hiệu PPG chạy trên Raspberry Pi** qua Bluetooth Low Energy (BLE).
+Ứng dụng Android toàn màn hình dùng để điều khiển và theo dõi **bộ mô phỏng tín hiệu PPG chạy trên Raspberry Pi** qua Bluetooth Low Energy (BLE) hoặc qua Internet (MQTT).
+
+Tín hiệu là tín hiệu mô phỏng dùng cho thử nghiệm và giảng dạy; các giá trị trên giao diện không phải kết quả đo lâm sàng.
 
 Ứng dụng được viết bằng Java, giao diện XML và Groovy Gradle DSL. Kết nối BLE sử dụng Nordic Android BLE Library.
 
 ## Mã nguồn
 
-Nhánh `main` chứa tài liệu giới thiệu. Mã nguồn Android được duy trì trên [nhánh `test-module`](https://github.com/halovie123/MedicalSimulator/tree/test-module); các chức năng và cấu hình dưới đây mô tả nhánh này.
+Nhánh `main` chứa mã nguồn ứng dụng mới nhất (Bluetooth, MQTT, ghép đôi QR, giao diện gọn). Thư mục build (`.gradle/`, `app/build/`) không được đưa vào git; Gradle tạo lại khi build.
 
 ```bash
-git clone --branch test-module https://github.com/halovie123/MedicalSimulator.git
+git clone https://github.com/halovie123/MedicalSimulator.git
 cd MedicalSimulator
 ```
 
 ## Chức năng chính
 
-Giao diện giống app trên Raspberry Pi: thanh điều hướng bên trái với cùng 4 trang và Signal setup, chân trang hiển thị chế độ đầu ra (HARDWARE / DRY RUN / NO DAC) và bộ đếm Buffer, Lost, Clipped của Pi. Mọi thao tác được gửi sang Pi; mọi giá trị hiển thị do Pi gửi về. Điện thoại không tự tạo tín hiệu và không chạy mô hình.
+Giao diện giống app trên Raspberry Pi: thanh điều hướng bên trái với cùng 4 trang và Signal setup, chân trang hiển thị trạng thái kết nối (`Connected · Bluetooth/Internet · <mã Pi>`), chế độ đầu ra (HARDWARE / DRY RUN / NO DAC) và bộ đếm Buffer, Lost, Clipped của Pi. Mọi thao tác được gửi sang Pi; mọi giá trị hiển thị do Pi gửi về. Điện thoại không tự tạo tín hiệu và không chạy mô hình.
 
-- **Classic / Monitor:** Start/Stop output, Record/Save CSV (file lưu trên Pi), chế độ bệnh lý, 3-Gaussian, tiếng bíp, nhịp tim, SpO₂ mục tiêu, nhịp thở; đồ thị TX (IR/RED) và RX (OPT101 A4/A0) kèm nhịp và SpO₂ thu do Pi ước lượng. Không còn thông số PI, giống app Pi.
+Giao diện gọn cho màn hình điện thoại nằm ngang: mỗi ô thông số có hai dòng (tên, khoảng giá trị và giá trị; rồi `−` slider `+`), nút trang cao 28 dp, nút trong thẻ cao 24 dp (`Ui.ACTION_H`, `Ui.TOOL_H`), nên đồ thị TX/RX chiếm phần lớn chiều cao. Chân trang không hiện tên broker (Tailscale/EMQX).
+
+- **Classic / Monitor:** Start/Stop output, Record/Save CSV (file lưu trên Pi), chế độ bệnh lý, 3-Gaussian, tiếng bíp, nhịp tim, SpO₂ mục tiêu, nhịp thở, mức nhiễu (Noise, 0–1 × AC; ô bị khoá khi Pi báo nhiễu do Signal setup đặt); đồ thị TX (IR/RED) và RX (OPT101 A4/A0) kèm nhịp và SpO₂ thu do Pi ước lượng. Không còn thông số PI, giống app Pi.
 - **Calibration / RX:** tần số, mức IR/RED, biên độ sine, dung sai, Start/Stop, hiệu chuẩn SpO₂ thu; chấm đạt/không đạt của từng làn do Pi so khớp.
-- **Recordings:** danh sách bản ghi CSV trên Pi, chọn, Play/Pause/Replay (phát trên màn hình Pi, không ra LED), thông số đã ghi tại vị trí phát.
-- **PPG morphology:** Fitted Gaussian, LSM-GAN, PSF-GAN, APFT-GAN (khoảng HR min–max), notch, HR, DC, AC, New sequence, Play LED · 30 s, vị trí xem. Mô hình chạy trên Pi; điện thoại chỉ điều khiển và hiển thị bản xem trước hoặc tín hiệu đang phát.
+- **Recordings:** danh sách bản ghi CSV trên Pi, chọn, Play/Pause/Replay (Pi phát mã DAC đã ghi ra LED, thay cho Classic), thông số đã ghi tại vị trí phát, **Upload to DB** (chạm hai lần để xác nhận) gửi riêng tệp đang chọn lên cơ sở dữ liệu. Xoá bản ghi làm trên màn hình Pi.
+- **PPG morphology:** Fitted Gaussian, LSM-GAN, PSF-GAN, APFT-GAN (khoảng HR min–max), notch, HR, DC, AC, New sequence, Play LED · 30 s, vị trí xem. **Save to Recordings** lưu cửa sổ đang xem thành CSV trong Recordings của Pi; **Export CSV** nhận CSV (`time_s, ir_v, red_v`) từ Pi và lưu vào nơi người dùng chọn trên điện thoại. Mô hình chạy trên Pi; điện thoại chỉ điều khiển và hiển thị bản xem trước hoặc tín hiệu đang phát.
 - **Signal setup:** AC/DC từng kênh (0–1500 mV) và mức nhiễu.
 - Chuyển trang trên điện thoại thì Pi chuyển theo, và ngược lại. Ngôn ngữ nhãn theo ngôn ngữ của app Pi (Anh/Việt).
 - Tự bỏ qua gói trạng thái cũ theo `seq`, gộp các thay đổi slider (tối đa 5 lệnh/giây mỗi nhóm) và tuần tự hóa lệnh BLE để tránh ghi đè trạng thái mới.
@@ -86,7 +90,6 @@ Ví dụ lệnh cập nhật thông số:
   "hr": 75,
   "spo2": 98,
   "rr": 16,
-  "pi": 3.0,
   "noise": 0.1,
   "condition": 0,
   "ac_ir_mv": 45.0,
@@ -109,16 +112,16 @@ Các lệnh thao tác được gửi riêng để không bị trộn với gói 
 
 Gói Status có thể chứa các thông số ở trên cùng với `running`, `recording`, `record_file`, `pb`, `pb_file`, `origin` và `seq`. Giá trị `pb` là `0` (không phát), `1` (đang phát) hoặc `2` (tạm dừng). Raspberry Pi là nguồn trạng thái chuẩn cho các thay đổi có `origin: "rpi"`.
 
-## Kết nối qua Internet (MQTT, nhánh thử `feature/mqtt-remote-db`)
+## Kết nối qua Internet (MQTT, bản thử)
 
-Ngoài Bluetooth, ứng dụng điều khiển được Pi từ xa qua một broker MQTT có TLS. Lệnh, sóng TX/RX và trạng thái các trang vẫn là đúng các gói của giao thức BLE v2/v3, chỉ đổi đường truyền (`remote/MqttLink.java`). Topic theo mã thiết bị Pi: `ppgsim/<id>/cmd`, `client`, `status`, `online`, `stream`, `ui`. Mô tả đầy đủ, cách dựng broker thử và ghi chú bảo mật ở `PPG_simulator_raspi/docs/remote_mqtt.md`.
+Ngoài Bluetooth, ứng dụng điều khiển được Pi từ xa qua broker MQTT có TLS. Pi có thể khai báo hai broker (ví dụ broker trên chính Pi qua Tailscale và một broker đám mây như EMQX); điện thoại thử lần lượt theo thứ tự, Tailscale trước. Lệnh, sóng TX/RX và trạng thái các trang vẫn là đúng các gói của giao thức BLE v2/v3, chỉ đổi đường truyền (`remote/MqttLink.java`). Topic theo mã thiết bị Pi: `ppgsim/<id>/cmd`, `client`, `status`, `online`, `stream`, `ui`. Mô tả đầy đủ, cách dựng broker thử và ghi chú bảo mật ở `PPG_simulator_raspi/docs/remote_mqtt.md`.
 
 Cách nhanh nhất: trên Pi bấm **Điện thoại** ở menu trái để hiện mã QR; trên điện thoại chạm biểu tượng Bluetooth → **Quét mã QR của Pi**. Ứng dụng lưu Pi đó và kết nối ngay (qua Internet nếu Pi đã cài broker, nếu không thì Bluetooth thẳng tới địa chỉ của Pi, không cần danh sách quét). Những lần sau mở app sẽ tự kết nối lại; bấm **Ngắt kết nối** thì thôi tự kết nối cho tới lần kết nối sau. Mã QR chứa vân tay SHA-256 của CA riêng, điện thoại chỉ tin CA khớp vân tay đó. Khi quét Bluetooth thủ công, nếu chỉ có một Pi trả lời trong 1,5 s thì app tự chọn.
 
 Nhập tay: chạm biểu tượng Bluetooth → **Internet (nhập tay)** → nhập máy chủ broker, cổng (8883 khi bật TLS), mã thiết bị Pi, tên đăng nhập, mật khẩu; với CA riêng của bản thử, bấm **Nhập CA…** và chọn tệp `ca.crt`. Cài đặt được lưu trong bộ nhớ riêng của ứng dụng. Chân trang hiện `Internet · <mã Pi>`; nếu broker kết nối được nhưng Pi chưa trực tuyến, dòng này chuyển màu vàng.
 
 
-Như app Pi: Record CSV ghi trên Raspberry Pi (`dataset/data_<n>.csv`), trang Recordings liệt kê và phát lại các tệp đó trên Pi. Khi Pi được cấu hình đồng bộ, mỗi bản ghi còn được sao lên cơ sở dữ liệu PostgreSQL; danh sách hiện `✓ DB` (đã lên DB), `… DB` (đang chờ) hoặc `✗ DB` (lỗi). Ứng dụng không còn ghi hay phát CSV trên điện thoại (`PpgRecorder`, `PpgPlayback`, `PlaybackDialog` đã bỏ).
+Như app Pi: Record CSV ghi trên Raspberry Pi (`dataset/data_<n>.csv`), trang Recordings liệt kê và phát lại các tệp đó trên Pi. Bản ghi chỉ lên cơ sở dữ liệu PostgreSQL của Pi khi người dùng bấm **Upload to DB** cho từng tệp (không tự tải lên); danh sách hiện `✓ DB` (đã lên DB), `… DB` (đang chờ) hoặc `✗ DB` (lỗi). Máy chủ thử nhận tệp qua HTTP chưa mã hoá, chỉ nên dùng trong mạng tin cậy. Ứng dụng không còn ghi hay phát CSV trên điện thoại (`PpgRecorder`, `PpgPlayback`, `PlaybackDialog` đã bỏ).
 
 ## Cấu trúc dự án
 

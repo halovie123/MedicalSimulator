@@ -101,22 +101,22 @@ public abstract class Page {
         bar.addView(texts, Ui.lp(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         bar.addView(actions);
         LinearLayout.LayoutParams lp = Ui.lp(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.bottomMargin = Ui.dp(c, 5);
+        lp.bottomMargin = Ui.dp(c, 4);
         root.addView(bar, lp);
         return bar;
     }
 
-    protected TextView titleText() { return Ui.line(c, "", 15, true, Ui.INK); }
+    protected TextView titleText() { return Ui.line(c, "", 14, true, Ui.INK); }
 
-    protected TextView subtitleText() { return Ui.text(c, "", 9.5f, false, Ui.MUTED); }
+    protected TextView subtitleText() { return Ui.text(c, "", 9, false, Ui.MUTED); }
 
     /** A card with a header row (title, then `tools` on the right) over its content. */
     protected LinearLayout section(TextView title, @Nullable LinearLayout tools) {
         LinearLayout card = Ui.card(c, LinearLayout.VERTICAL);
-        int p = Ui.dp(c, 6);
-        card.setPadding(p, Ui.dp(c, 4), p, p);
+        int p = Ui.dp(c, 5);
+        card.setPadding(p, Ui.dp(c, 3), p, p);
         LinearLayout head = Ui.row(c);
-        head.setMinimumHeight(Ui.dp(c, 30));
+        head.setMinimumHeight(Ui.dp(c, 26));
         title.setPadding(Ui.dp(c, 3), 0, Ui.dp(c, 6), 0);
         head.addView(title, Ui.lp(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         if (tools != null) head.addView(tools);
@@ -124,7 +124,7 @@ public abstract class Page {
         return card;
     }
 
-    protected TextView cardTitle() { return Ui.line(c, "", 12.5f, true, Ui.INK); }
+    protected TextView cardTitle() { return Ui.line(c, "", 11.5f, true, Ui.INK); }
 
     /** The RX card used on every page: IR (A4) and RED (A0) lanes of the OPT101 receiver, last 8 s. */
     protected LinearLayout rxCard(@Nullable LinearLayout tools) {
@@ -149,7 +149,7 @@ public abstract class Page {
 
     /** A status line under the page, coloured by the Pi's state name. */
     protected TextView statusLine() {
-        TextView t = Ui.text(c, "", 10, false, Ui.MUTED);
+        TextView t = Ui.text(c, "", 9.5f, false, Ui.MUTED);
         t.setMaxLines(2);
         t.setGravity(Gravity.CENTER_VERTICAL);
         LinearLayout.LayoutParams lp = Ui.lp(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);

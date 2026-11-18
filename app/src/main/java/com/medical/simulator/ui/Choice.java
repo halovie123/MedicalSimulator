@@ -17,7 +17,7 @@ public class Choice {
 
     public Choice(@NonNull Context c, @NonNull String[] labels, @NonNull OnChoice listener) {
         this.labels = labels;
-        button = Ui.outline(c, "", 11);
+        button = Ui.outline(c, "", Ui.TOOL_TEXT);
         button.setOnClickListener(v -> {
             PopupMenu menu = new PopupMenu(c, button);
             for (int i = 0; i < this.labels.length; i++) menu.getMenu().add(Menu.NONE, i, i, this.labels[i]);

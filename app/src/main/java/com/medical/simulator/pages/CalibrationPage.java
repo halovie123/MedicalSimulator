@@ -40,14 +40,14 @@ public class CalibrationPage extends Page {
         title = titleText();
         subtitle = subtitleText();
         LinearLayout actions = Ui.row(c);
-        spo2Btn = Ui.outline(c, "", 11.5f);
+        spo2Btn = Ui.outline(c, "", Ui.ACTION_TEXT);
         spo2Btn.setOnClickListener(v -> host.send(pageCommand("cal", "spo2", true)));
-        LinearLayout.LayoutParams sp = Ui.lp(Ui.dp(c, 126), Ui.dp(c, 32));
+        LinearLayout.LayoutParams sp = Ui.lp(Ui.dp(c, 112), Ui.dp(c, Ui.ACTION_H));
         sp.rightMargin = Ui.dp(c, 6);
         actions.addView(spo2Btn, sp);
         runBtn = Ui.primary(c, "");
         runBtn.setOnClickListener(v -> host.send(pageCommand("cal", "run", !running)));
-        actions.addView(runBtn, Ui.lp(Ui.dp(c, 96), Ui.dp(c, 32)));
+        actions.addView(runBtn, Ui.lp(Ui.dp(c, 86), Ui.dp(c, Ui.ACTION_H)));
         pageHeader(title, subtitle, actions);
 
         // ── test signal controls ──
@@ -74,7 +74,7 @@ public class CalibrationPage extends Page {
         }
         controls.addView(row);
         LinearLayout.LayoutParams cp = Ui.lp(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        cp.bottomMargin = Ui.dp(c, 5);
+        cp.bottomMargin = Ui.dp(c, 4);
         root.addView(controls, cp);
 
         // ── TX (1/3) and RX (2/3) ──
