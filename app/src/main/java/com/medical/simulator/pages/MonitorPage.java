@@ -22,7 +22,7 @@ import org.json.JSONObject;
 /**
  * Classic / Monitor page (Pi: ui/frames/pathology_frame.py): output status, Record CSV and Start output,
  * the TX plot with the condition and 3-Gaussian controls, the RX plot with the pulse tone, and the heart
- * rate, SpO₂ target and respiration setpoints. There is no PI setpoint, as on the Pi.
+ * rate, SpO₂ target, respiration and noise setpoints. There is no PI setpoint, as on the Pi.
  */
 public class MonitorPage extends Page {
     private final View dot;
@@ -30,7 +30,7 @@ public class MonitorPage extends Page {
     private final Button recordBtn, runBtn, gaussBtn, beepBtn;
     private final Choice condition;
     private final LaneView txView;
-    private final ValueControl hr, spo2, rr;
+    private final ValueControl hr, spo2, rr, noise;
     private boolean running, recording, beep = true;
     private String txPlaceholder = "", txPlaceholderSub = "";
 
@@ -100,11 +100,18 @@ public class MonitorPage extends Page {
         hr = ValueControl.card(c, "", "bpm", 10, 300, 1, 0, 75);
         spo2 = ValueControl.card(c, "", "%", 0, 100, 1, 0, 99);
         rr = ValueControl.card(c, "", "brpm", 1, 150, 1, 0, 16);
-        ValueControl[] cards = {hr, spo2, rr};
-        String[] keys = {"hr", "spo2", "rr"};
+        // Proportional noise level, 0-1 x AC (models/limits.py NOISE_LEVEL), the v2 "noise" key.
+        noise = ValueControl.card(c, "", "× AC", 0, 1, 0.01, 2, 0);
+        ValueControl[] cards = {hr, spo2, rr, noise};
+        String[] keys = {"hr", "spo2", "rr", "noise"};
         for (int i = 0; i < cards.length; i++) {
             final String key = keys[i];
-            cards[i].setOnValue((value, done) -> host.sendThrottled("mon", obj(key, (int) Math.round(value))));
+            if ("noise".equals(key)) {
+                cards[i].setOnValue((value, done) -> host.sendThrottled("mon",
+                        obj(key, Math.round(value * 100) / 100.0)));
+            } else {
+                cards[i].setOnValue((value, done) -> host.sendThrottled("mon", obj(key, (int) Math.round(value))));
+            }
             LinearLayout.LayoutParams cp = Ui.lp(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
             cp.leftMargin = i == 0 ? 0 : Ui.dp(c, 3);
             cp.rightMargin = i == cards.length - 1 ? 0 : Ui.dp(c, 3);
@@ -125,6 +132,7 @@ public class MonitorPage extends Page {
         hr.setTitle(Texts.t("hr"));
         spo2.setTitle(Texts.t("spo2"));
         rr.setTitle(Texts.t("rr"));
+        noise.setTitle(Texts.t("noise"));
         int selected = condition.selected();
         condition.setLabels(Texts.conditions());
         condition.select(selected);
@@ -151,6 +159,7 @@ public class MonitorPage extends Page {
             if (s.hr != null) hr.setRemote(s.hr);
             if (s.spo2 != null) spo2.setRemote(s.spo2);
             if (s.rr != null) rr.setRemote(s.rr);
+            if (s.noise != null) noise.setRemote(s.noise);
         }
         if (s.condition != null) condition.select(s.condition);
         paintButtons();
@@ -166,6 +175,10 @@ public class MonitorPage extends Page {
             statusDetail.setTextColor(Ui.kindColor(part.optString("dk")));
             beep = part.optBoolean("beep", beep);
             spo2.setBadge(part.optBoolean("rm") ? Texts.t("badge_red_manual") : null);
+            // The level acts only on the proportional noise kind; the Pi names another kind chosen in its Settings.
+            String noiseBadge = part.optString("nb", "");
+            noise.setBadge(noiseBadge.isEmpty() ? null : noiseBadge);
+            noise.setEnabled(noiseBadge.isEmpty());
             paintButtons();
         } else if ("tx".equals(kind)) {
             JSONArray lanes = part.optJSONArray("l");
