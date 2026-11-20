@@ -26,7 +26,7 @@ Giao diện gọn cho màn hình điện thoại nằm ngang: mỗi ô thông s�
 - **Recordings:** danh sách bản ghi CSV trên Pi, chọn, Play/Pause/Replay (Pi phát mã DAC đã ghi ra LED, thay cho Classic), thông số đã ghi tại vị trí phát, **Upload to DB** (chạm hai lần để xác nhận) gửi riêng tệp đang chọn lên cơ sở dữ liệu. Xoá bản ghi làm trên màn hình Pi.
 - **PPG morphology:** Fitted Gaussian, LSM-GAN, PSF-GAN, APFT-GAN (khoảng HR min–max), notch, HR, DC, AC, New sequence, Play LED · 30 s, vị trí xem. **Save to Recordings** lưu cửa sổ đang xem thành CSV trong Recordings của Pi; **Export CSV** nhận CSV (`time_s, ir_v, red_v`) từ Pi và lưu vào nơi người dùng chọn trên điện thoại. Mô hình chạy trên Pi; điện thoại chỉ điều khiển và hiển thị bản xem trước hoặc tín hiệu đang phát.
 - **Signal setup:** AC/DC từng kênh (0–1500 mV) và mức nhiễu.
-- Chuyển trang trên điện thoại thì Pi chuyển theo, và ngược lại. Ngôn ngữ nhãn theo ngôn ngữ của app Pi (Anh/Việt).
+- Chuyển trang trên điện thoại thì Pi chuyển theo, và ngược lại. Ngôn ngữ nhãn theo ngôn ngữ của app Pi (Anh/Việt). Điện thoại chỉ đi theo Pi khi trang trên Pi thực sự đổi (ai đó bấm trên màn hình Pi) và đã quá 2,5 s kể từ lần chuyển trang trên điện thoại. Nếu Pi vẫn báo trang cũ, tức là lệnh `view` bị mất (ví dụ khi kết nối MQTT chập chờn), điện thoại gửi lại lệnh đó, mỗi 1,5 s một lần, thay vì nhảy về trang của Pi (`FOLLOW_PI_AFTER_MS`, `VIEW_RESEND_MS` trong `MainActivity.java`).
 - Tự bỏ qua gói trạng thái cũ theo `seq`, gộp các thay đổi slider (tối đa 5 lệnh/giây mỗi nhóm) và tuần tự hóa lệnh BLE để tránh ghi đè trạng thái mới.
 
 ## Yêu cầu
