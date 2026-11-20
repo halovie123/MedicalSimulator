@@ -71,13 +71,19 @@ public abstract class Page {
     /** Labels changed language (the Pi's language). */
     public abstract void refreshTexts();
 
+    /**
+     * True: the RX lanes draw the AC part only (DC level removed), as on the Pi. The Calibration page keeps the
+     * received levels, since there the received DC is checked against the sent level.
+     */
+    protected boolean rxAcOnly() { return true; }
+
     /** ~20 times a second while shown: redraw the plots. */
     public void tick() {
         if (rxView == null) return;
         Streams s = host.streams();
         if (s.rxLive(1500)) {
-            s.fill(rxView.lane(0), s.rxIr, true);
-            s.fill(rxView.lane(1), s.rxRed, true);
+            s.fill(rxView.lane(0), s.rxIr, true, rxAcOnly());
+            s.fill(rxView.lane(1), s.rxRed, true, rxAcOnly());
         } else {
             rxView.lane(0).clear();
             rxView.lane(1).clear();

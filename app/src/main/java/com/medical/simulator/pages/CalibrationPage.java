@@ -172,6 +172,9 @@ public class CalibrationPage extends Page {
     }
 
     @Override
+    protected boolean rxAcOnly() { return false; }   // the received level is what this page checks
+
+    @Override
     public void tick() {
         super.tick();
         // The Pi blinks a passing dot every 0.5 s; the phone blinks on its own clock instead of the Pi's frames.

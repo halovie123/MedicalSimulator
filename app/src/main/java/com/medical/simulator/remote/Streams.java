@@ -80,6 +80,15 @@ public final class Streams {
      * neighbours is drawn as their mean, like the light despiking of the Pi's RX plot; gaps stay gaps.
      */
     public void fill(@NonNull LaneView.Lane lane, @NonNull Ring ring, boolean despike) {
+        fill(lane, ring, despike, false);
+    }
+
+    /**
+     * As {@link #fill(LaneView.Lane, Ring, boolean)}; removeDc draws the AC part only: every value minus the
+     * mean of the drawn samples (the DC level, as the Pi's RX plot removes it). One mean for the whole window,
+     * so a lane that goes dark for a while still shows a step.
+     */
+    public void fill(@NonNull LaneView.Lane lane, @NonNull Ring ring, boolean despike, boolean removeDc) {
         int n = ring.size(), k = 0;
         for (int i = 0; i < n; i++) {
             float y = ring.get(i);
@@ -94,6 +103,12 @@ public final class Streams {
             xs[k] = -(n - 1 - i) * DT;
             ys[k] = y;
             k++;
+        }
+        if (removeDc && k > 0) {
+            double sum = 0;
+            for (int i = 0; i < k; i++) sum += ys[i];
+            float dc = (float) (sum / k);
+            for (int i = 0; i < k; i++) ys[i] -= dc;
         }
         lane.setData(xs, ys, k);
     }
